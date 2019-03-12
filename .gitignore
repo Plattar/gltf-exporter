@@ -4,3 +4,5 @@ unity-gltf-exporter/Library/
 unity-gltf-exporter/Temp/
 
 \.DS_Store
+
+*.meta
