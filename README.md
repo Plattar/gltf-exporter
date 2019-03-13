@@ -7,7 +7,11 @@ _GLTF Exporter_ is a [Unity3D](https://unity3d.com/) Editor Tool that allows exp
 
 ### How to use it
 
-It is recommended you download the latest release from https://github.com/Plattar/Unity-glTF-Exporter/releases and open it in unity as a project. This will give you access to the environment maps.
+Grab the latest Unity3D Package release from the [releases](https://github.com/Plattar/gltf-exporter/releases) section and import it into a new or current project.
+
+Once the _GLTF Exporter_ tool has been imported you will see a new Toolbar in Unity3D.
+
+
 
 Once the project is open, a new item should appear in the *Tools* menu. You can access the exporter by going through **Tools/Export to Plattar** as shown in the following screenshot:
 
