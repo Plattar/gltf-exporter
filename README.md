@@ -31,9 +31,9 @@ Link to the glTF 2.0 specification: https://github.com/KhronosGroup/glTF/tree/2.
 
 ### Important notes
 
-Please note that for now, output glTF files **may not be 100% compliant** with the current state of glTF 2.0 (as mentionned above with bump maps).
+Please note that for now, output glTF files **may not be 100% compliant** with the current state of glTF 2.0.
 
-This plugin is being updated with glTF file format. Since updates can contain breaking changes causing issues with Sketchfab glTF processing (also updated), it's strongly recommended to use the latest version.
+This plugin is being updated with glTF file format. It's strongly recommended to use the latest version from the [release](https://github.com/Plattar/gltf-exporter/releases) section.
 
 ### Acknowledgements
 
