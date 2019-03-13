@@ -16,12 +16,12 @@ Once the _GLTF Exporter_ tool has been imported you will see a new Toolbar in Un
 
 Clicking on the _Plattar_ Toolbar will present the following editor wizard.
 <h3 align="left">
-  <img src="graphics/wizard.png?raw=true" alt="Unity3D Wizard" width="600">
+  <img src="graphics/wizard.png?raw=true" alt="Unity3D Wizard" width="400">
 </h3>
 
 Either select or drag and drop the **GameObject** you'd like to export and click the export button.
 <h3 align="left">
-  <img src="graphics/export.png?raw=true" alt="Unity3D Export" width="600">
+  <img src="graphics/export.png?raw=true" alt="Unity3D Export" width="400">
 </h3>
 
 You will be asked for a destination to export the GLTF files. When importing to Plattar, ensure to zip the entire GLTF directory.
