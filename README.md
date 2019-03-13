@@ -39,4 +39,4 @@ This plugin is being updated with glTF file format. Since updates can contain br
 
 This tool relies on the following open source projects.
 
-- [Khronos UnityGLTF](https://github.com/KhronosGroup/UnityGLTF)
+- [KhronosGroup UnityGLTF](https://github.com/KhronosGroup/UnityGLTF)
