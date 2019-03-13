@@ -11,11 +11,14 @@ namespace Plattar {
 		
 		AnimBool showSettings;
 		GameObject selectedObject;
+		static Texture logo;
 		
 		[MenuItem("Plattar/Exporter")]
 		static void Init() {
+			logo = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
+		
 			PlattarExporter window = (PlattarExporter)EditorWindow.GetWindow(typeof(PlattarExporter), false, "Plattar Exporter");
-			window.minSize = new Vector2(350, 190);
+			window.minSize = new Vector2(350, 320);
 			window.Show();
 		}
 		
@@ -25,6 +28,12 @@ namespace Plattar {
 		}
 		
 		void OnGUI() {
+			GUILayout.BeginHorizontal();
+			GUILayout.FlexibleSpace();
+			GUILayout.Label(logo);
+			GUILayout.FlexibleSpace();
+			GUILayout.EndHorizontal();
+			
 			showSettings.target = EditorGUILayout.ToggleLeft("Exporter Options", showSettings.target);
 			
 			//Extra block that can be toggled on and off.
@@ -61,7 +70,6 @@ namespace Plattar {
 					var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform }, RetrieveTexturePath);
 
 					var path = EditorUtility.OpenFolderPanel("glTF Export Path", "", "");
-					
 					if (!string.IsNullOrEmpty(path)) {
 						exporter.SaveGLTFandBin(path, selectionName);
 						EditorUtility.DisplayDialog("Successful Export", "GLTF Exported Successfully", "OK");
