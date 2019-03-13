@@ -80,6 +80,16 @@ namespace Plattar {
 					return;
 				}
 				
+				var meshes = selectedObject.GetComponentsInChildren<MeshFilter>();
+				
+				if (meshes == null || meshes.Length <= 0) {
+					EditorGUILayout.BeginVertical();
+					EditorGUILayout.HelpBox("Your Selected GameObject or it's children have attached Geometry", MessageType.Error);
+					EditorGUILayout.EndVertical();
+
+					return;
+				}
+				
 				EditorGUILayout.Separator();
 				EditorGUILayout.BeginVertical();
 				
