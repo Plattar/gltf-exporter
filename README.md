@@ -41,9 +41,7 @@ Please note that camera, lights, custom scripts, shaders and post processes are 
 
 ### PBR materials
 
-glTF 2.0 core specification includes metal/roughness PBR material declaration. Specular/glossiness workflow is also available but kept under an extension for now.
-
-Link to the glTF 2.0 specification: https://github.com/KhronosGroup/glTF/tree/2.0/specification/2.0
+[GLTF 2.0 Core Specification](https://github.com/KhronosGroup/glTF/tree/master/specification/2.0) includes metal/roughness PBR material declaration. Specular/glossiness workflow is also available but kept under an extension for now.
 
 ### Important notes
 
