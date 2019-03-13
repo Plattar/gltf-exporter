@@ -10,12 +10,21 @@ _GLTF Exporter_ is a [Unity3D](https://unity3d.com/) Editor Tool that allows exp
 Grab the latest Unity3D Package release from the [releases](https://github.com/Plattar/gltf-exporter/releases) section and import it into a new or current project.
 
 Once the _GLTF Exporter_ tool has been imported you will see a new Toolbar in Unity3D.
+<h3 align="left">
+  <img src="graphics/toolbar.png?raw=true" alt="Unity3D Toolbar" width="600">
+</h3>
 
+Clicking on the _Plattar_ Toolbar will present the following editor wizard.
+<h3 align="left">
+  <img src="graphics/wizard.png?raw=true" alt="Unity3D Wizard" width="600">
+</h3>
 
+Either select or drag and drop the **GameObject** you'd like to export and click the export button.
+<h3 align="left">
+  <img src="graphics/export.png?raw=true" alt="Unity3D Export" width="600">
+</h3>
 
-Once the project is open, a new item should appear in the *Tools* menu. You can access the exporter by going through **Tools/Export to Plattar** as shown in the following screenshot:
-
-Select the objects you want to export and click export. You will be prompted to save the zip file somewhere.
+You will be asked for a destination to export the GLTF files. When importing to Plattar, ensure to zip the entire GLTF directory.
 
 Supported Unity objects and features so far:
 - Scene objects such as transforms and meshes
@@ -25,7 +34,6 @@ Supported Unity objects and features so far:
 *(Note that animation is still in beta)*
 
 Please note that camera, lights, custom scripts, shaders and post processes are not exported.
-
 
 ### PBR materials
 
