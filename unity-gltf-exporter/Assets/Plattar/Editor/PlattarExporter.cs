@@ -13,7 +13,7 @@ namespace Plattar {
 		GameObject selectedObject;
 		static Texture logo;
 		
-		[MenuItem("Plattar/Exporter")]
+		[MenuItem("Plattar/GLTF Exporter")]
 		static void Init() {
 			logo = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
 		
