@@ -314,6 +314,12 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>/Applications/Unity/Hub/Editor/2018.3.6f1/Unity.app/Contents/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
+    <Reference Include="GLTFSerialization">
+      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/UnityGLTF/Plugins/net35/GLTFSerialization.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/UnityGLTF/Plugins/net35/Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
@@ -322,12 +328,6 @@
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
       <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
-    </Reference>
-    <Reference Include="GLTFSerialization">
-      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/UnityGLTF/Plugins/net35/GLTFSerialization.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/UnityGLTF/Plugins/net35/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>/Applications/Unity/Hub/Editor/2018.3.6f1/Unity.app/Contents/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

@@ -5,6 +5,8 @@ using UnityEditor;
 using UnityEditor.AnimatedValues;
 using UnityGLTF;
 using UnityEngine.SceneManagement;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Plattar {
 	public class PlattarExporter : EditorWindow {
@@ -62,17 +64,35 @@ namespace Plattar {
 				EditorGUILayout.EndVertical();
 			}
 			else {
-				EditorGUILayout.Separator();
-				EditorGUILayout.BeginVertical();
 				string selectionName = selectedObject.name;
 				
+				// ensure the name of our object is valid
+				if (string.IsNullOrEmpty(selectionName) || Regex.Matches(selectionName,@"[a-zA-Z]").Count <= 0) {
+					EditorGUILayout.BeginVertical();
+					EditorGUILayout.HelpBox("Your Selected GameObject does not have a valid name", MessageType.Error);
+					EditorGUILayout.EndVertical();
+
+					return;
+				}
+				
+				EditorGUILayout.Separator();
+				EditorGUILayout.BeginVertical();
+
 				if (GUILayout.Button("Export " + selectionName + " to GLTF")) {
 					var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform }, RetrieveTexturePath);
 
 					var path = EditorUtility.OpenFolderPanel("glTF Export Path", "", "");
 					if (!string.IsNullOrEmpty(path)) {
-						exporter.SaveGLTFandBin(path, selectionName);
-						EditorUtility.DisplayDialog("Successful Export", "GLTF Exported Successfully", "OK");
+						path += "/" + selectionName + "_export_gltf";
+						DirectoryInfo info = Directory.CreateDirectory(path);
+						
+						if (info.Exists) {
+							exporter.SaveGLTFandBin(path, selectionName);
+							EditorUtility.DisplayDialog("Successful Export", "GLTF Exported Successfully", "OK");
+						}
+						else {
+							EditorUtility.DisplayDialog("Failed Export", "GLTF Could not be exported, could not create export path", "OK");
+						}
 					}
 					else {
 						EditorGUILayout.HelpBox("Failed to export since the path is invalid", MessageType.Error);
