@@ -22,7 +22,7 @@ namespace Plattar {
 			logo = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
 		
 			PlattarExporter window = (PlattarExporter)EditorWindow.GetWindow(typeof(PlattarExporter), false, "Plattar Exporter");
-			window.minSize = new Vector2(350, 320);
+			window.minSize = new Vector2(350, 340);
 			window.Show();
 		}
 		
