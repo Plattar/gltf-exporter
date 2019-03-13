@@ -24,7 +24,11 @@ Either select or drag and drop the **GameObject** you'd like to export and click
   <img src="graphics/export.png?raw=true" alt="Unity3D Export" width="400">
 </h3>
 
-You will be asked for a destination to export the GLTF files. When importing to Plattar, ensure to zip the entire GLTF directory.
+You will be asked for a destination to export the GLTF files. When importing to Plattar, ensure to zip the entire GLTF directory. The tool provides an option to perform the zipping automatically.
+
+<h3 align="left">
+  <img src="graphics/zipopt.png?raw=true" alt="Unity3D Export" width="400">
+</h3>
 
 Supported Unity objects and features so far:
 - Scene objects such as transforms and meshes
