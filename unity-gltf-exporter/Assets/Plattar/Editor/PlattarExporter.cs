@@ -48,7 +48,7 @@ namespace Plattar {
 			
 			if (selectedObject == null) {
 				EditorGUILayout.BeginVertical();
-				EditorGUILayout.HelpBox("You need to select an object to continue", MessageType.Error);
+				EditorGUILayout.HelpBox("You need to select a GameObject to continue", MessageType.Error);
 				EditorGUILayout.EndVertical();
 			}
 			else {
@@ -63,9 +63,11 @@ namespace Plattar {
 					
 					if (!string.IsNullOrEmpty(path)) {
 						exporter.SaveGLTFandBin(path, selectionName);
+						this.ShowNotification(new GUIContent("GLTF Exported Successfully"));
 					}
 					else {
 						EditorGUILayout.HelpBox("Failed to export since the path is invalid", MessageType.Error);
+						this.ShowNotification(new GUIContent("GLTF Could not be exported, invalid export path provided"));
 					}
 				}
 				EditorGUILayout.EndVertical();
