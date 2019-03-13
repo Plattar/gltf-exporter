@@ -4,6 +4,7 @@ using UnityGLTF;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/*
 public class GLTFExportMenu : EditorWindow
 {
     public static string RetrieveTexturePath(UnityEngine.Texture texture)
@@ -84,3 +85,4 @@ public class GLTFExportMenu : EditorWindow
 		}
 	}
 }
+*/

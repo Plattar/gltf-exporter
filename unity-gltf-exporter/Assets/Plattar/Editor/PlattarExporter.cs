@@ -15,6 +15,7 @@ namespace Plattar {
 		[MenuItem("Plattar/Exporter")]
 		static void Init() {
 			PlattarExporter window = (PlattarExporter)EditorWindow.GetWindow(typeof(PlattarExporter), false, "Plattar Exporter");
+			window.minSize = new Vector2(350, 190);
 			window.Show();
 		}
 		
@@ -63,11 +64,11 @@ namespace Plattar {
 					
 					if (!string.IsNullOrEmpty(path)) {
 						exporter.SaveGLTFandBin(path, selectionName);
-						this.ShowNotification(new GUIContent("GLTF Exported Successfully"));
+						EditorUtility.DisplayDialog("Successful Export", "GLTF Exported Successfully", "OK");
 					}
 					else {
 						EditorGUILayout.HelpBox("Failed to export since the path is invalid", MessageType.Error);
-						this.ShowNotification(new GUIContent("GLTF Could not be exported, invalid export path provided"));
+						EditorUtility.DisplayDialog("Failed Export", "GLTF Could not be exported, invalid export path provided", "OK");
 					}
 				}
 				EditorGUILayout.EndVertical();
