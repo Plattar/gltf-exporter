@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Plattar\PlattarExporterOptions.cs" />
     <Compile Include="Assets\UnityGLTF\Scripts\Async\AsyncCoroutineHelper.cs" />
     <Compile Include="Assets\UnityGLTF\Scripts\Async\TaskExtensions.cs" />
     <Compile Include="Assets\UnityGLTF\Scripts\Cache\AnimationCacheData.cs" />
