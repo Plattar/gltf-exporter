@@ -60,42 +60,42 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Plattar\PlattarExporterOptions.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Async\AsyncCoroutineHelper.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Async\TaskExtensions.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Cache\AnimationCacheData.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Cache\AssetCache.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Cache\BufferCacheData.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Cache\MaterialCacheData.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Cache\MeshCacheData.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Cache\RefCountedCacheData.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Cache\TextureCacheData.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Exceptions.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Extensions\SchemaExtensions.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\GLTFComponent.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\GLTFSceneExporter.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\GLTFSceneImporter.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\InstantiatedGLTFObject.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Loader\FileLoader.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Loader\ILoader.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Loader\StorageFolderLoader.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Loader\WebRequestLoader.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Tests\Integration\GLTFExporterIntegrationTest.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\Tests\Integration\GLTFTestComponent.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\UniformMaps\MetalRough2StandardMap.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\UniformMaps\MetalRoughMap.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\UniformMaps\SpecGloss2StandardMap.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\UniformMaps\SpecGlossMap.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\UniformMaps\StandardMap.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\UniformMaps\UniformMap.cs" />
-    <Compile Include="Assets\UnityGLTF\Scripts\URIHelper.cs" />
-    <None Include="Assets\Resources\NormalChannel.shader" />
-    <None Include="Assets\UnityGLTF\Shaders\PbrMetallicRoughness.shader" />
-    <None Include="Assets\UnityGLTF\Shaders\UnityStandardShadow.cginc" />
-    <None Include="Assets\UnityGLTF\Shaders\PbrSpecularGlossiness.shader" />
-    <None Include="Assets\UnityGLTF\Shaders\UnityStandardInput.cginc" />
-    <None Include="Assets\Resources\MetalGlossChannelSwap.shader" />
-    <None Include="Assets\Resources\README.txt" />
+    <Compile Include="Assets\PlattarExporter\Plattar\PlattarExporterOptions.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Async\AsyncCoroutineHelper.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Async\TaskExtensions.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Cache\AnimationCacheData.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Cache\AssetCache.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Cache\BufferCacheData.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Cache\MaterialCacheData.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Cache\MeshCacheData.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Cache\RefCountedCacheData.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Cache\TextureCacheData.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Exceptions.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Extensions\SchemaExtensions.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\GLTFComponent.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\GLTFSceneExporter.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\GLTFSceneImporter.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\InstantiatedGLTFObject.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Loader\FileLoader.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Loader\ILoader.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Loader\StorageFolderLoader.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Loader\WebRequestLoader.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Tests\Integration\GLTFExporterIntegrationTest.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Tests\Integration\GLTFTestComponent.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\UniformMaps\MetalRough2StandardMap.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\UniformMaps\MetalRoughMap.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\UniformMaps\SpecGloss2StandardMap.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\UniformMaps\SpecGlossMap.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\UniformMaps\StandardMap.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\UniformMaps\UniformMap.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\URIHelper.cs" />
+    <None Include="Assets\PlattarExporter\Resources\NormalChannel.shader" />
+    <None Include="Assets\PlattarExporter\UnityGLTF\Shaders\PbrMetallicRoughness.shader" />
+    <None Include="Assets\PlattarExporter\UnityGLTF\Shaders\UnityStandardShadow.cginc" />
+    <None Include="Assets\PlattarExporter\UnityGLTF\Shaders\PbrSpecularGlossiness.shader" />
+    <None Include="Assets\PlattarExporter\UnityGLTF\Shaders\UnityStandardInput.cginc" />
+    <None Include="Assets\PlattarExporter\Resources\MetalGlossChannelSwap.shader" />
+    <None Include="Assets\PlattarExporter\Resources\README.txt" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
@@ -315,12 +315,6 @@
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>/Applications/Unity/Hub/Editor/2018.3.6f1/Unity.app/Contents/UnityExtensions/Unity/UnitySpatialTracking/RuntimeEditor/UnityEngine.SpatialTracking.dll</HintPath>
     </Reference>
-    <Reference Include="GLTFSerialization">
-      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/UnityGLTF/Plugins/net35/GLTFSerialization.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/UnityGLTF/Plugins/net35/Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Analytics.Tracker">
       <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.Tracker.dll</HintPath>
     </Reference>
@@ -329,6 +323,12 @@
     </Reference>
     <Reference Include="Unity.Analytics.StandardEvents">
       <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/PackageCache/com.unity.analytics@3.2.2/Unity.Analytics.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="GLTFSerialization">
+      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Plugins/net35/GLTFSerialization.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Plugins/net35/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>/Applications/Unity/Hub/Editor/2018.3.6f1/Unity.app/Contents/NetStandard/ref/2.0.0/netstandard.dll</HintPath>

@@ -92,31 +92,10 @@ namespace Plattar {
 				
 				EditorGUILayout.Separator();
 				EditorGUILayout.BeginVertical();
-				
-				showExportSettings.target = EditorGUILayout.ToggleLeft("Generator Options", showExportSettings.target);
-			
-				//Extra block that can be toggled on and off.
-				if (EditorGUILayout.BeginFadeGroup(showExportSettings.faded)) {
-					EditorGUI.indentLevel++;
-					
-					EditorGUILayout.BeginVertical();
-					PlattarExporterOptions.IsZip = EditorGUILayout.Toggle("Export Zip Archive", PlattarExporterOptions.IsZip);
-					EditorGUILayout.EndVertical();
-					EditorGUI.indentLevel--;
-				}
-				
-				EditorGUILayout.EndFadeGroup();
 
 				if (GUILayout.Button("Export " + selectionName + " to GLTF")) {
-					if (!PlattarExporterOptions.IsZip) {
-						if (GenerateGLTF(selectedObject) != null) {
-							EditorUtility.DisplayDialog("Successful Export", "GLTF Exported Successfully", "OK");
-						}
-					}
-					else {
-						if (GenerateGLTFZipped(selectedObject) != null) {
-							EditorUtility.DisplayDialog("Successful Export", "GLTF Exported and Zipped Successfully", "OK");
-						}
+					if (GenerateGLTFZipped(selectedObject) != null) {
+						EditorUtility.DisplayDialog("Successful Export", "GLTF Exported and Zipped Successfully", "OK");
 					}
 				}
 				
@@ -127,7 +106,7 @@ namespace Plattar {
 		/**
 		 * Generate the GLTF file and zip it all up
 		 */
-		public static Tuple<string, string> GenerateGLTFZipped(GameObject selectedObject) {
+		public static Tuple<string, string, string> GenerateGLTFZipped(GameObject selectedObject) {
 			var path = GenerateGLTF(selectedObject);
 			
 			if (path == null) {
@@ -136,8 +115,7 @@ namespace Plattar {
 			
 			// otherwise, we need to zip up the entire directory
 			// and delete the original
-			string selectionName = selectedObject.name;
-			PlattarExporterOptions.CompressDirectory(path.Item2, path.Item1 + "/" + selectionName);
+			PlattarExporterOptions.CompressDirectory(path.Item2, path.Item1 + "/" + path.Item3);
 			PlattarExporterOptions.DeleteDirectory(path.Item2);
 
 			return path;
@@ -146,11 +124,16 @@ namespace Plattar {
 		/**
 		 * Generate a non-zipped GLTF file with all folders etc
 		 */
-		public static Tuple<string, string> GenerateGLTF(GameObject selectedObject) {
+		public static Tuple<string, string, string> GenerateGLTF(GameObject selectedObject) {
 			var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform }, RetrieveTexturePath);
 			string selectionName = selectedObject.name;
 
-			var path = EditorUtility.OpenFolderPanel("glTF Export Path", "", "");
+			string fullpath = EditorUtility.SaveFilePanel("glTF Export Path", PlattarExporterOptions.LastEditorPath, selectionName, "zip");
+			PlattarExporterOptions.LastEditorPath = Path.GetDirectoryName(fullpath);
+
+			string selectedName = Path.GetFileNameWithoutExtension(fullpath);
+			
+			var path = PlattarExporterOptions.LastEditorPath;
 			if (!string.IsNullOrEmpty(path)) {
 				var newpath = path + "/" + selectionName + "_export_gltf";
 				DirectoryInfo info = Directory.CreateDirectory(newpath);
@@ -158,7 +141,7 @@ namespace Plattar {
 				if (info.Exists) {
 					exporter.SaveGLTFandBin(newpath, selectionName);
 
-					return new Tuple<string, string>(path, newpath);
+					return new Tuple<string, string, string>(path, newpath, selectedName);
 				}
 				
 				EditorUtility.DisplayDialog("Failed Export", "GLTF Could not be exported, could not create export path", "OK");
