@@ -19,7 +19,7 @@ namespace Plattar {
 		
 		[MenuItem("Plattar/GLTF Exporter")]
 		static void Init() {
-			logo = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
+			logo = (Texture2D)AssetDatabase.LoadAssetAtPath("Assets/PlattarExporter/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
 		
 			PlattarExporter window = (PlattarExporter)EditorWindow.GetWindow(typeof(PlattarExporter), false, "Plattar Exporter");
 			window.minSize = new Vector2(350, 340);
