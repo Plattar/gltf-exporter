@@ -54,3 +54,4 @@ This plugin is being updated with glTF file format. It's strongly recommended to
 This tool relies on the following open source projects.
 
 - [KhronosGroup UnityGLTF](https://github.com/KhronosGroup/UnityGLTF)
+- [Sketchfab UnityGLTF](https://github.com/sketchfab/UnityGLTF)
