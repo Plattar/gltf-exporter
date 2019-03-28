@@ -70,8 +70,11 @@ namespace UnityGLTF
 			public Mesh Mesh;
 			public Material Material;
 		}
+
 		private readonly Dictionary<PrimKey, MeshId> _primOwner = new Dictionary<PrimKey, MeshId>();
 		private readonly Dictionary<Mesh, MeshPrimitive[]> _meshToPrims = new Dictionary<Mesh, MeshPrimitive[]>();
+
+		private readonly GLTFAnimationExporter animationExport = new GLTFAnimationExporter();
 
 		// Settings
 		public static bool ExportNames = true;
@@ -109,7 +112,8 @@ namespace UnityGLTF
 				Nodes = new List<Node>(),
 				Samplers = new List<Sampler>(),
 				Scenes = new List<GLTFScene>(),
-				Textures = new List<GLTFTexture>()
+				Textures = new List<GLTFTexture>(),
+				Animations = new List<GLTFAnimation>()
 			};
 
 			_imageInfos = new List<ImageInfo>();
@@ -423,6 +427,9 @@ namespace UnityGLTF
 
 			_root.Scenes.Add(scene);
 
+			// bake in the animations
+			animationExport.ExportAnimations(_root, this);
+
 			return new SceneId
 			{
 				Id = _root.Scenes.Count - 1,
@@ -447,6 +454,9 @@ namespace UnityGLTF
 			}
 
 			node.SetUnityTransform(nodeTransform);
+
+			// add an animation node if it exists
+			animationExport.AddAnimationIfAny(nodeTransform, _root.Nodes.Count);
 
 			var id = new NodeId
 			{
@@ -981,7 +991,7 @@ namespace UnityGLTF
 			if (material.HasProperty("_Glossiness"))
 			{
 				var metallicGlossMap = material.GetTexture("_MetallicGlossMap");
-				pbr.RoughnessFactor = (metallicGlossMap != null) ? 1.0 : 1.0f - material.GetFloat("_Glossiness");
+				pbr.RoughnessFactor = (metallicGlossMap != null) ? 1.0 : 1.0 - material.GetFloat("_Glossiness");
 			}
 
 			if (material.HasProperty("_MetallicGlossMap"))
@@ -1295,7 +1305,7 @@ namespace UnityGLTF
 			return samplerId;
 		}
 
-		private AccessorId ExportAccessor(int[] arr, bool isIndices = false)
+		public AccessorId ExportAccessor(int[] arr, bool isIndices = false)
 		{
 			uint count = (uint)arr.Length;
 
@@ -1415,7 +1425,63 @@ namespace UnityGLTF
 		    return byteLength;
 		}
 
-		private AccessorId ExportAccessor(Vector2[] arr)
+		public AccessorId ExportAccessor(float[] arr)
+		{
+			var count = arr.Length;
+
+			if (count == 0)
+			{
+				throw new Exception("Accessors can not have a count of 0.");
+			}
+
+			var accessor = new Accessor();
+			accessor.ComponentType = GLTFComponentType.Float;
+			accessor.Count = (uint)count;
+			accessor.Type = GLTFAccessorAttributeType.SCALAR;
+
+			float min = arr[0];
+			float max = arr[0];
+
+			for (var i = 1; i < count; i++)
+			{
+				var cur = arr[i];
+
+				if (cur < min)
+				{
+					min = cur;
+				}
+				if (cur > max)
+				{
+					max = cur;
+				}
+			}
+
+			accessor.Min = new List<double> { min };
+			accessor.Max = new List<double> { max };
+
+			var byteOffset = _bufferWriter.BaseStream.Position;
+
+			foreach (var value in arr)
+			{
+				_bufferWriter.Write(value);
+			}
+
+			var byteLength = _bufferWriter.BaseStream.Position - byteOffset;
+
+			accessor.BufferView = ExportBufferView((uint)byteOffset, (uint)byteLength);
+
+			var id = new AccessorId
+			{
+				Id = _root.Accessors.Count,
+				Root = _root
+			};
+
+			_root.Accessors.Add(accessor);
+
+			return id;
+		}
+
+		public AccessorId ExportAccessor(Vector2[] arr)
 		{
 			uint count = (uint)arr.Length;
 
@@ -1482,7 +1548,7 @@ namespace UnityGLTF
 			return id;
 		}
 
-		private AccessorId ExportAccessor(Vector3[] arr)
+		public AccessorId ExportAccessor(Vector3[] arr, bool switchHandedness=false)
 		{
 			uint count = (uint)arr.Length;
 
@@ -1541,9 +1607,10 @@ namespace UnityGLTF
 
 			foreach (var vec in arr)
 			{
-				_bufferWriter.Write(vec.x);
-				_bufferWriter.Write(vec.y);
-				_bufferWriter.Write(vec.z);
+				Vector3 vect = switchHandedness ? vec.SwitchHandedness() : vec;
+				_bufferWriter.Write(vect.x);
+				_bufferWriter.Write(vect.y);
+				_bufferWriter.Write(vect.z);
 			}
 
 			uint byteLength = CalculateAlignment((uint)_bufferWriter.BaseStream.Position - byteOffset, 4);
@@ -1560,7 +1627,7 @@ namespace UnityGLTF
 			return id;
 		}
 
-		private AccessorId ExportAccessor(Vector4[] arr)
+		public AccessorId ExportAccessor(Vector4[] arr, bool switchHandedness=false)
 		{
 			uint count = (uint)arr.Length;
 
@@ -1629,10 +1696,11 @@ namespace UnityGLTF
 
 			foreach (var vec in arr)
 			{
-				_bufferWriter.Write(vec.x);
-				_bufferWriter.Write(vec.y);
-				_bufferWriter.Write(vec.z);
-				_bufferWriter.Write(vec.w);
+				Vector4 vect = switchHandedness ? vec.SwitchHandedness() : vec;
+				_bufferWriter.Write(vect.x);
+				_bufferWriter.Write(vect.y);
+				_bufferWriter.Write(vect.z);
+				_bufferWriter.Write(vect.w);
 			}
 
 			uint byteLength = CalculateAlignment((uint)_bufferWriter.BaseStream.Position - byteOffset, 4);
@@ -1649,7 +1717,7 @@ namespace UnityGLTF
 			return id;
 		}
 
-		private AccessorId ExportAccessor(Color[] arr)
+		public AccessorId ExportAccessor(Color[] arr)
 		{
 			uint count = (uint)arr.Length;
 
