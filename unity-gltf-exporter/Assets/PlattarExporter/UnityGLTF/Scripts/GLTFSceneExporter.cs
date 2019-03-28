@@ -80,6 +80,7 @@ namespace UnityGLTF
 		public static bool ExportNames = true;
 		public static bool ExportFullPath = true;
 		public static bool RequireExtensions = false;
+		public static bool ExportAnimations = true;
 
 		/// <summary>
 		/// Create a GLTFExporter that exports out a transform
@@ -428,7 +429,9 @@ namespace UnityGLTF
 			_root.Scenes.Add(scene);
 
 			// bake in the animations
-			animationExport.ExportAnimations(_root, this);
+			if (ExportAnimations) {
+				animationExport.ExportAnimations(_root, this);
+			}
 
 			return new SceneId
 			{
@@ -456,7 +459,9 @@ namespace UnityGLTF
 			node.SetUnityTransform(nodeTransform);
 
 			// add an animation node if it exists
-			animationExport.AddAnimationIfAny(nodeTransform, _root.Nodes.Count);
+			if (ExportAnimations) {
+				animationExport.AddAnimationIfAny(nodeTransform, _root.Nodes.Count);
+			}
 
 			var id = new NodeId
 			{
