@@ -5,6 +5,10 @@ _GLTF Exporter_ is a [Unity3D](https://unity3d.com/) Editor Tool that allows exp
 
 ***
 
+### Before usage
+
+Ensure to remove all converters that depend on the [UnityGLTF](https://github.com/KhronosGroup/UnityGLTF). This is to ensure there are no script clashes or compatibility issues.
+
 ### How to use it
 
 Grab the latest Unity3D Package release from the [releases](https://github.com/Plattar/gltf-exporter/releases) section and import it into a new or current project.
