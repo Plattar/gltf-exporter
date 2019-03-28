@@ -61,6 +61,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\PlattarExporter\Plattar\PlattarExporterOptions.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\AnimationExport\GLTFAnimationExporter.cs" />
+    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\AnimationExport\GLTFAnimationExtensions.cs" />
     <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Async\AsyncCoroutineHelper.cs" />
     <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Async\TaskExtensions.cs" />
     <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Cache\AnimationCacheData.cs" />

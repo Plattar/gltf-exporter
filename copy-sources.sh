@@ -10,7 +10,6 @@ rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF.meta
 rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/Resources
 rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/Resources.meta
 
-
 # create a fresh directory to copy new sources into
 mkdir -p ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF
 
@@ -19,6 +18,7 @@ cp -R ./../UnityGLTF/UnityGLTF/Assets/UnityGLTF/Scripts ./unity-gltf-exporter/As
 cp -R ./../UnityGLTF/UnityGLTF/Assets/UnityGLTF/Shaders ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF
 cp -R ./../UnityGLTF/UnityGLTF/Assets/UnityGLTF/Plugins ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF
 
+# Copy the Resources folder, has assets used by the exporter
 cp -R ./../UnityGLTF/UnityGLTF/Assets/Resources ./unity-gltf-exporter/Assets/PlattarExporter
 
 # delete the editor folder

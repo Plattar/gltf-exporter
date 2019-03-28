@@ -50,7 +50,8 @@ namespace Plattar {
 				EditorGUILayout.BeginVertical();
 				GLTFSceneExporter.ExportFullPath = EditorGUILayout.Toggle("Export using original path", GLTFSceneExporter.ExportFullPath);
 				GLTFSceneExporter.ExportNames = EditorGUILayout.Toggle("Export names of nodes", GLTFSceneExporter.ExportNames);
-				GLTFSceneExporter.RequireExtensions= EditorGUILayout.Toggle("Require extensions", GLTFSceneExporter.RequireExtensions);
+				GLTFSceneExporter.RequireExtensions = EditorGUILayout.Toggle("Require extensions", GLTFSceneExporter.RequireExtensions);
+				GLTFSceneExporter.ExportAnimations = EditorGUILayout.Toggle("Export animations", GLTFSceneExporter.ExportAnimations);
 				EditorGUILayout.EndVertical();
 				EditorGUI.indentLevel--;
 			}
