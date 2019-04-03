@@ -61,11 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\PlattarExporter\Plattar\Editor\PlattarExporter.cs" />
-    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Tests\Editor\GLTFAssetGeneratorTests.cs" />
-    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Tests\Editor\GLTFBenchmark.cs" />
-    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Tests\Editor\GLTFRootTests.cs" />
-    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Tests\Editor\GLTFSceneTests.cs" />
-    <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Tests\Editor\Manifest.cs" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
@@ -316,10 +311,13 @@
       <HintPath>/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll</HintPath>
     </Reference>
     <Reference Include="GLTFSerialization">
-      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Plugins/net35/GLTFSerialization.dll</HintPath>
+      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Plugins/GLTFSerialization.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Plugins/net35/Newtonsoft.Json.dll</HintPath>
+      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Plugins/Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip.Unity">
+      <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Scripts/Dependencies/Ionic.Zip.Unity.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.Advertisements">
       <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/PackageCache/com.unity.ads@2.0.8/Editor/UnityEditor.Advertisements.dll</HintPath>

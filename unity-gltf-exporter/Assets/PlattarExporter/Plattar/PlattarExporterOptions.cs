@@ -7,6 +7,7 @@ namespace Plattar {
 		public static readonly string ZipExtension = ".zip";
 		public static bool IsZip = true;
 		public static string LastEditorPath = "";
+		public static bool ExportAnimations = true;
 		
 		public static void CompressDirectory(string source, string destination) {
 			// Compress a folder.

@@ -13,7 +13,6 @@ namespace Plattar {
 	public class PlattarExporter : EditorWindow {
 		
 		AnimBool showSettings;
-		AnimBool showExportSettings;
 		GameObject selectedObject;
 		static Texture logo;
 		
@@ -29,9 +28,6 @@ namespace Plattar {
 		void OnEnable() {
 			showSettings = new AnimBool(false);
 			showSettings.valueChanged.AddListener(Repaint);
-			
-			showExportSettings = new AnimBool(false);
-			showExportSettings.valueChanged.AddListener(Repaint);
 		}
 		
 		void OnGUI() {
@@ -48,10 +44,7 @@ namespace Plattar {
 				EditorGUI.indentLevel++;
 				
 				EditorGUILayout.BeginVertical();
-				GLTFSceneExporter.ExportFullPath = EditorGUILayout.Toggle("Export using original path", GLTFSceneExporter.ExportFullPath);
-				GLTFSceneExporter.ExportNames = EditorGUILayout.Toggle("Export names of nodes", GLTFSceneExporter.ExportNames);
-				GLTFSceneExporter.RequireExtensions = EditorGUILayout.Toggle("Require extensions", GLTFSceneExporter.RequireExtensions);
-				GLTFSceneExporter.ExportAnimations = EditorGUILayout.Toggle("Export animations", GLTFSceneExporter.ExportAnimations);
+				PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export animations", PlattarExporterOptions.ExportAnimations);
 				EditorGUILayout.EndVertical();
 				EditorGUI.indentLevel--;
 			}
@@ -126,7 +119,6 @@ namespace Plattar {
 		 * Generate a non-zipped GLTF file with all folders etc
 		 */
 		public static Tuple<string, string, string> GenerateGLTF(GameObject selectedObject) {
-			var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform }, RetrieveTexturePath);
 			string selectionName = selectedObject.name;
 
 			string fullpath = EditorUtility.SaveFilePanel("glTF Export Path", PlattarExporterOptions.LastEditorPath, selectionName, "zip");
@@ -140,7 +132,14 @@ namespace Plattar {
 				DirectoryInfo info = Directory.CreateDirectory(newpath);
 				
 				if (info.Exists) {
-					exporter.SaveGLTFandBin(newpath, selectionName);
+					if (PlattarExporterOptions.ExportAnimations == true) {
+						var exporter = new GLTFEditorExporter(new Transform[] { selectedObject.transform });
+						exporter.SaveGLTFandBin(newpath, selectionName);
+					}
+					else {
+						var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform });
+						exporter.SaveGLTFandBin(newpath, selectionName);
+					}
 
 					return new Tuple<string, string, string>(path, newpath, selectedName);
 				}
@@ -153,10 +152,6 @@ namespace Plattar {
 			}
 
 			return null;
-		}
-
-		public static string RetrieveTexturePath(UnityEngine.Texture texture) {
-			return AssetDatabase.GetAssetPath(texture);
 		}
 	}
 }
