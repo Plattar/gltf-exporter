@@ -26,7 +26,5 @@ rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Scripts/Editor
 rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Scripts/Editor.meta
 rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Scripts/Sketchfab
 rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Scripts/Sketchfab.meta
-rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Examples
-rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Examples.meta
-rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Prefabs
-rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Prefabs.meta
+rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Scripts/Tests
+rm -rf ./unity-gltf-exporter/Assets/PlattarExporter/UnityGLTF/Scripts/Tests.meta
