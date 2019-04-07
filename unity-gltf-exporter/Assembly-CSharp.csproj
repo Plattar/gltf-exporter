@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\PlattarExporter\Plattar\Alignment\AlignmentScript.cs" />
     <Compile Include="Assets\PlattarExporter\Plattar\PlattarExporterOptions.cs" />
     <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\AssetSerializer.cs" />
     <Compile Include="Assets\PlattarExporter\UnityGLTF\Scripts\Async\AsyncAction.cs" />

@@ -13,6 +13,7 @@ namespace Plattar {
 	public class PlattarExporter : EditorWindow {
 		
 		AnimBool showSettings;
+		AnimBool showAlignmentSettings;
 		GameObject selectedObject;
 		static Texture logo;
 		
@@ -28,6 +29,9 @@ namespace Plattar {
 		void OnEnable() {
 			showSettings = new AnimBool(false);
 			showSettings.valueChanged.AddListener(Repaint);
+
+			showAlignmentSettings = new AnimBool(false);
+			showAlignmentSettings.valueChanged.AddListener(Repaint);
 		}
 		
 		void OnGUI() {
@@ -45,6 +49,40 @@ namespace Plattar {
 				
 				EditorGUILayout.BeginVertical();
 				PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export animations", PlattarExporterOptions.ExportAnimations);
+				EditorGUILayout.EndVertical();
+				EditorGUI.indentLevel--;
+			}
+
+			EditorGUILayout.EndFadeGroup();
+
+			showAlignmentSettings.target = EditorGUILayout.ToggleLeft("Alignment Grid Options", showAlignmentSettings.target);
+			
+			//Extra block that can be toggled on and off.
+			if (EditorGUILayout.BeginFadeGroup(showAlignmentSettings.faded)) {
+				EditorGUI.indentLevel++;
+
+				var foundGrids = GameObject.FindObjectsOfType<AlignmentScript>();
+				
+				EditorGUILayout.BeginVertical();
+				
+				if (foundGrids != null && foundGrids.Length > 0) {
+					if (GUILayout.Button("Hide Alignment Grid")) {
+						for (int i = 0; i < foundGrids.Length; i++) {
+							if (foundGrids[i] != null && foundGrids[i].gameObject != null) {
+								GameObject.DestroyImmediate(foundGrids[i].gameObject);
+							}
+						}
+					}
+				}
+				else {
+					if (GUILayout.Button("Show Alignment Grid")) {
+						var grid = (GameObject)AssetDatabase.LoadAssetAtPath("Assets/PlattarExporter/Plattar/Alignment/AlignmentPlane.prefab", typeof(GameObject));
+						var obj = GameObject.Instantiate(grid);
+
+						obj.name = "Plattar Alignment Grid";
+					}
+				}
+
 				EditorGUILayout.EndVertical();
 				EditorGUI.indentLevel--;
 			}
@@ -78,7 +116,7 @@ namespace Plattar {
 				
 				if (meshes == null || meshes.Length <= 0) {
 					EditorGUILayout.BeginVertical();
-					EditorGUILayout.HelpBox("Your Selected GameObject or it's children have attached Geometry", MessageType.Error);
+					EditorGUILayout.HelpBox("Your selected GameObject or it's children have no Geometry", MessageType.Error);
 					EditorGUILayout.EndVertical();
 
 					return;
