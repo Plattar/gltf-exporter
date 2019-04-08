@@ -111,6 +111,16 @@ namespace Plattar {
 
 					return;
 				}
+
+				var checkScripts = selectedObject.GetComponentsInChildren<AlignmentScript>();
+
+				if (checkScripts != null && checkScripts.Length > 0) {
+					EditorGUILayout.BeginVertical();
+					EditorGUILayout.HelpBox("Your selected GameObject or it's children contains an Alignment Grid", MessageType.Error);
+					EditorGUILayout.EndVertical();
+
+					return;
+				}
 				
 				var meshes = selectedObject.GetComponentsInChildren<MeshFilter>();
 				
