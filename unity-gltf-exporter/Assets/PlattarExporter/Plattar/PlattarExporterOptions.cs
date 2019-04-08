@@ -10,8 +10,18 @@ namespace Plattar {
 		public static bool ExportAnimations = true;
 		
 		public static void CompressDirectory(string source, string destination) {
+			// delete any files that exist
+			PlattarExporterOptions.DeleteFile(destination + ZipExtension);
+
 			// Compress a folder.
 			ZipFile.CreateFromDirectory(source, destination + ZipExtension);
+		}
+
+		public static void DeleteFile(string target_file) {
+			if (File.Exists(target_file)) {
+			    File.SetAttributes(target_file, FileAttributes.Normal);
+				File.Delete(target_file);
+			}
 		}
 		
 		public static void DeleteDirectory(string target_dir) {
