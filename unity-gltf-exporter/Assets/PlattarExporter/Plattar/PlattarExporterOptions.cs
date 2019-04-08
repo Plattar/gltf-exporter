@@ -29,8 +29,7 @@ namespace Plattar {
 			string[] dirs = Directory.GetDirectories(target_dir);
 			
 			foreach (string file in files) {
-				File.SetAttributes(file, FileAttributes.Normal);
-				File.Delete(file);
+				PlattarExporterOptions.DeleteFile(file);
 			}
 			
 			foreach (string dir in dirs) {
