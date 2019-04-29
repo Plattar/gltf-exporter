@@ -5,6 +5,7 @@ using GLTF.Schema;
 using UnityEngine;
 using UnityGLTF.Extensions;
 using UnityEditor;
+using System.Text.RegularExpressions;
 
 namespace UnityGLTF
 {
@@ -237,6 +238,7 @@ namespace UnityGLTF
 
 		private void exportAnimation()
 		{
+			/*
 			GLTF.Schema.Animation anim = new GLTF.Schema.Animation();
 			anim.Name = "Take 001";
 			for (int i = 0; i < _animatedNodes.Count; ++i)
@@ -250,6 +252,14 @@ namespace UnityGLTF
 			if (anim.Channels.Count > 0 && anim.Samplers.Count > 0)
 			{
 				_root.Animations.Add(anim);
+			}
+			*/
+			for (int i = 0; i < _animatedNodes.Count; ++i)
+			{
+				Transform t = _animatedNodes[i];
+				exportAnimationFromNode(ref t);
+
+				updateProgress(EXPORT_STEP.ANIMATIONS, i, _animatedNodes.Count);
 			}
 		}
 
@@ -1815,8 +1825,9 @@ namespace UnityGLTF
 		static bool bake = true;
 
 		// Parses Animation/Animator component and generate a glTF animation for the active clip
-		public void exportAnimationFromNode(ref Transform transform, ref GLTF.Schema.Animation anim)
+		public void exportAnimationFromNode(ref Transform transform/*, ref GLTF.Schema.Animation anim*/)
 		{
+			/*
 			Animator a = transform.GetComponent<Animator>();
 			if (a != null)
 			{
@@ -1838,6 +1849,37 @@ namespace UnityGLTF
 					convertClipToGLTFAnimation(ref clips[i], ref transform, ref anim);
 				}
 			}
+			*/
+			Animator a = transform.GetComponent<Animator>();
+
+			if (a != null) {
+				AnimationClip[] clips = AnimationUtility.GetAnimationClips(transform.gameObject);
+
+				for (int i = 0; i < clips.Length; i++) {
+					GLTF.Schema.Animation anim = new GLTF.Schema.Animation();
+					anim.Name = GLTFEditorExporter.cleanNonAlphanumeric(a.name);
+					convertClipToGLTFAnimation(ref clips[i], ref transform, ref anim);
+
+					if (anim.Channels.Count > 0 && anim.Samplers.Count > 0) {
+						_root.Animations.Add(anim);
+					}
+				}
+			}
+
+			UnityEngine.Animation animation = transform.GetComponent<UnityEngine.Animation>();
+			if (animation != null) {
+				foreach (AnimationState state in animation) {
+					AnimationClip clip = state.clip;
+
+					GLTF.Schema.Animation anim = new GLTF.Schema.Animation();
+					anim.Name = GLTFEditorExporter.cleanNonAlphanumeric(state.name);
+					convertClipToGLTFAnimation(ref clip, ref transform, ref anim);
+
+					if (anim.Channels.Count > 0 && anim.Samplers.Count > 0) {
+						_root.Animations.Add(anim);
+					}
+				}
+        	}
 		}
 
 		private int getTargetIdFromTransform(ref Transform transform)
@@ -2179,6 +2221,13 @@ namespace UnityGLTF
 			}
 
 			return weights;
+		}
+
+		public static Regex rgx = new Regex("[^a-zA-Z0-9 -_.]");
+
+		static public string cleanNonAlphanumeric(string s)
+		{
+			return rgx.Replace(s, "");
 		}
 	}
 }
