@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Plattar {
-	#if UNITY_EDITOR
+#if UNITY_EDITOR
 	[ExecuteInEditMode]
 	public class AlignmentScript : MonoBehaviour {
 		void Awake() {
@@ -11,15 +11,15 @@ namespace Plattar {
 		}
 
 		void Update() {
-			gameObject.transform.position = new Vector3(0,0,0);
-			gameObject.transform.localEulerAngles = new Vector3(0,180.0f,0);
+			gameObject.transform.position = new Vector3(0, 0, 0);
+			gameObject.transform.localEulerAngles = new Vector3(0, 180.0f, 0);
 		}
 	}
-	#else
+#else
 	public class AlignmentScript : MonoBehaviour {
 		void Awake() {
 			gameObject.SetActive(false);
 		}
 	}
-	#endif
+#endif
 }
