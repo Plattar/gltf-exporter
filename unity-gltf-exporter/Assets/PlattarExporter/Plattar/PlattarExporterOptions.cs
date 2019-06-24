@@ -2,7 +2,7 @@
 
 using System;
 using System.IO;
-using System.IO.Compression;
+using Ionic.Zip;
 
 namespace Plattar {
 	public class PlattarExporterOptions {
@@ -15,7 +15,10 @@ namespace Plattar {
 			// delete any files that exist
 			PlattarExporterOptions.DeleteFile(destination + ZipExtension);
 			// Compress a folder.
-			ZipFile.CreateFromDirectory(source, destination + ZipExtension);
+			using(ZipFile zip = new ZipFile()) {
+				zip.AddDirectory(source);
+				zip.Save(destination + ZipExtension);
+			}
 		}
 
 		public static void DeleteFile(string target_file) {
