@@ -1,12 +1,9 @@
 
 unity-gltf-exporter/Library/
-
 unity-gltf-exporter/Temp/
-
 \.DS_Store
-
 *.meta
-
 unity-gltf-exporter/.vs/
-
 unity-gltf-exporter/obj/
+unity-gltf-exporter/\.vscode/
+unity-gltf-exporter/Logs/
