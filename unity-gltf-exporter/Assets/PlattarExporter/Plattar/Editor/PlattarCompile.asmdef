@@ -1,0 +1,18 @@
+{
+    "name": "PlattarCompile",
+    "references": [
+        "GUID:8b3afd26da7d04a5d9f733a74e7ddf26",
+        "GUID:1420bbad893324e3c821d4901f06418e"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

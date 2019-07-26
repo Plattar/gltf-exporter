@@ -1,5 +1,5 @@
 {
-    "name": "Compiler",
+    "name": "ResourceCompile",
     "references": [],
     "optionalUnityReferences": [],
     "includePlatforms": [

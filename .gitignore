@@ -7,3 +7,4 @@ unity-gltf-exporter/.vs/
 unity-gltf-exporter/obj/
 unity-gltf-exporter/\.vscode/
 unity-gltf-exporter/Logs/
+*.csproj

@@ -11,10 +11,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{E64FE92B-9C67-A946-2EE9-380BAAD4A9F2}</ProjectGuid>
+    <ProjectGuid>{790C7B45-0B47-3A08-EC5A-B502329D8D77}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
+    <AssemblyName>PlattarCompile</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -57,24 +57,6 @@
   <ItemGroup>
      <Compile Include="Assets\PlattarExporter\Plattar\Editor\PlattarExporter.cs" />
      <Compile Include="Assets\PlattarExporter\Plattar\Editor\PlattarExporterOptions.cs" />
- <Reference Include="Unity.Timeline.Editor">
- <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.TextMeshPro.Editor">
- <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Timeline">
- <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
- </Reference>
- <Reference Include="Unity.CollabProxy.Editor">
- <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
- </Reference>
- <Reference Include="Unity.TextMeshPro">
- <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
- </Reference>
- <Reference Include="Unity.Analytics.DataPrivacy">
- <HintPath>/Users/david/Desktop/git-repositories/gltf-exporter/unity-gltf-exporter/Library/ScriptAssemblies/Unity.Analytics.DataPrivacy.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.AIModule">
  <HintPath>/Applications/Unity/Hub/Editor/2019.1.11f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
  </Reference>
@@ -653,13 +635,13 @@
  </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{7C735A1F-9003-3FDC-52E8-6BF18BDA4E41}</Project>
-      <Name>Assembly-CSharp</Name>
-    </ProjectReference>
     <ProjectReference Include="Compiler.csproj">
       <Project>{0A70EDD2-F0E8-C5DC-1151-4B5FC2B96811}</Project>
       <Name>Compiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="PlattarSelectiveCompile.csproj">
+      <Project>{B33D06AF-7EE5-3D6B-4105-3276C73A8CD2}</Project>
+      <Name>PlattarSelectiveCompile</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

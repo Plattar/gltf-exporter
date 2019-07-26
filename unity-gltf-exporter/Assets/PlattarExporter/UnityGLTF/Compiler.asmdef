@@ -1,0 +1,17 @@
+{
+    "name": "Compiler",
+    "references": [
+        "GUID:fb2c644c3faa249a1bf00cbc2c318134"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compiler", "Compiler.csproj", "{0A70EDD2-F0E8-C5DC-1151-4B5FC2B96811}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlattarCompile", "PlattarCompile.csproj", "{790C7B45-0B47-3A08-EC5A-B502329D8D77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlattarSelectiveCompile", "PlattarSelectiveCompile.csproj", "{B33D06AF-7EE5-3D6B-4105-3276C73A8CD2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,6 +17,14 @@ Global
 		{0A70EDD2-F0E8-C5DC-1151-4B5FC2B96811}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A70EDD2-F0E8-C5DC-1151-4B5FC2B96811}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A70EDD2-F0E8-C5DC-1151-4B5FC2B96811}.Release|Any CPU.Build.0 = Release|Any CPU
+		{790C7B45-0B47-3A08-EC5A-B502329D8D77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{790C7B45-0B47-3A08-EC5A-B502329D8D77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{790C7B45-0B47-3A08-EC5A-B502329D8D77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{790C7B45-0B47-3A08-EC5A-B502329D8D77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B33D06AF-7EE5-3D6B-4105-3276C73A8CD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B33D06AF-7EE5-3D6B-4105-3276C73A8CD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B33D06AF-7EE5-3D6B-4105-3276C73A8CD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B33D06AF-7EE5-3D6B-4105-3276C73A8CD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
