@@ -13,6 +13,7 @@ namespace Plattar {
 	public class PlattarImporter : EditorWindow {
 
 		static Texture logo;
+		static GLTFEditorImporter importer;
 
 		[MenuItem("Plattar/GLTF Importer")]
 		static void Init() {
@@ -56,12 +57,46 @@ namespace Plattar {
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.Separator();
 
-			EditorGUILayout.BeginVertical();
-			EditorGUILayout.HelpBox("Select a GLTF file to import into the project", MessageType.Info);
-			if (GUILayout.Button("Import GLTF")) {
+			if (PlattarImporter.importer == null) {
+				EditorGUILayout.BeginVertical();
+				EditorGUILayout.HelpBox("Select a GLTF file to import into the project", MessageType.Info);
 
+				if (GUILayout.Button("Import GLTF")) {
+					string gltfPath = SelectGLTF();
+
+					if (gltfPath == null) {
+						EditorUtility.DisplayDialog("Import Failed", "GLTF failed to import, file is invalid", "OK");
+					}
+					else {
+						string name = Path.GetFileNameWithoutExtension(gltfPath);
+						string importPath = Application.dataPath + "/GLTFImports/" + name;
+
+						PlattarImporter.importer = new GLTFEditorImporter((task, start, end) => {
+							
+						});
+						PlattarImporter.importer.setupForPath(gltfPath, importPath, name);
+						PlattarImporter.importer.Load();
+					}
+				}
+
+				EditorGUILayout.EndVertical();
 			}
-			EditorGUILayout.EndVertical();
+		}
+
+		/**
+		 * Prompt the User for selecting a .GLTF file to import
+		 */
+		private string SelectGLTF() {
+			string fullpath = EditorUtility.OpenFilePanel("Select GLTF", PlattarExporterOptions.LastEditorPath, "gltf");
+
+			try {
+				PlattarExporterOptions.LastEditorPath = Path.GetDirectoryName(fullpath);
+			}
+			catch {
+				return null;
+			}
+
+			return fullpath;
 		}
 	}
 }
