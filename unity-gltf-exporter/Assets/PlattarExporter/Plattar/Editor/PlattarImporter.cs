@@ -72,9 +72,15 @@ namespace Plattar {
 						string importPath = Application.dataPath + "/GLTFImports/" + name;
 
 						PlattarImporter.importer = new GLTFEditorImporter((task, start, end) => {
-							
+							float progress = start / end;
+							EditorUtility.DisplayProgressBar("Importing GLTF", "Importing " + name + " model, please wait...", progress);
+						},() => {
+							// if this gets called, we are done!
+							PlattarImporter.importer = null;
+							EditorUtility.ClearProgressBar();
 						});
-						PlattarImporter.importer.setupForPath(gltfPath, importPath, name);
+						
+						PlattarImporter.importer.setupForPath(gltfPath, importPath, name, true);
 						PlattarImporter.importer.Load();
 					}
 				}
@@ -97,6 +103,12 @@ namespace Plattar {
 			}
 
 			return fullpath;
+		}
+
+		void Update() {
+			if (PlattarImporter.importer != null) {
+				PlattarImporter.importer.Update();
+			}
 		}
 	}
 }
