@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityGLTF;
 
 namespace Plattar {
-	public class PlattarImporter : EditorWindow {
+	public class Importer : EditorWindow {
 
 		static Texture logo;
 		static GLTFEditorImporter importer;
@@ -79,7 +79,7 @@ namespace Plattar {
 							PlattarImporter.importer = null;
 							EditorUtility.ClearProgressBar();
 						});
-						
+
 						PlattarImporter.importer.setupForPath(gltfPath, importPath, name, true);
 						PlattarImporter.importer.Load();
 					}

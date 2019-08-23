@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 using UnityGLTF;
 
 namespace Plattar {
-	public class PlattarExporter : EditorWindow {
+	public class Exporter : EditorWindow {
 
 		GameObject selectedObject;
 		static Texture logo;
