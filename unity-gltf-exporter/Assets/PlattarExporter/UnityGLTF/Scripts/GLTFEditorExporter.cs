@@ -846,6 +846,7 @@ namespace UnityGLTF
 					pbr.MetallicRoughnessTexture = ExportTextureInfo(mrTex);
 					// writing 1.0 does not export this for whatever reason
 					pbr.MetallicFactor = 0.99;
+					pbr.RoughnessFactor = 0.99;
 					ExportTextureTransform(pbr.MetallicRoughnessTexture, material, "_MetallicRoughnessMap");
 				}
 			}
