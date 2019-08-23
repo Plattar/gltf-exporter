@@ -20,7 +20,7 @@ namespace Plattar {
 			logo = (Texture2D) AssetDatabase.LoadAssetAtPath("Assets/PlattarExporter/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
 
 			Type inspectorType = Type.GetType("UnityEditor.InspectorWindow,UnityEditor.dll");
-			EditorWindow window = EditorWindow.GetWindow<PlattarImporter>(new Type[] {inspectorType});
+			EditorWindow window = EditorWindow.GetWindow<Importer>(new Type[] {inspectorType});
 			window.Show();
 		}
 
@@ -57,7 +57,7 @@ namespace Plattar {
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.Separator();
 
-			if (PlattarImporter.importer == null) {
+			if (Importer.importer == null) {
 				EditorGUILayout.BeginVertical();
 				EditorGUILayout.HelpBox("Select a GLTF file to import into the project", MessageType.Info);
 
@@ -71,17 +71,17 @@ namespace Plattar {
 						string name = Path.GetFileNameWithoutExtension(gltfPath);
 						string importPath = Application.dataPath + "/GLTFImports/" + name;
 
-						PlattarImporter.importer = new GLTFEditorImporter((task, start, end) => {
+						Importer.importer = new GLTFEditorImporter((task, start, end) => {
 							float progress = start / end;
 							EditorUtility.DisplayProgressBar("Importing GLTF", "Importing " + name + " model, please wait...", progress);
 						},() => {
 							// if this gets called, we are done!
-							PlattarImporter.importer = null;
+							Importer.importer = null;
 							EditorUtility.ClearProgressBar();
 						});
 
-						PlattarImporter.importer.setupForPath(gltfPath, importPath, name, true);
-						PlattarImporter.importer.Load();
+						Importer.importer.setupForPath(gltfPath, importPath, name, true);
+						Importer.importer.Load();
 					}
 				}
 
@@ -106,8 +106,8 @@ namespace Plattar {
 		}
 
 		void Update() {
-			if (PlattarImporter.importer != null) {
-				PlattarImporter.importer.Update();
+			if (Importer.importer != null) {
+				Importer.importer.Update();
 			}
 		}
 	}

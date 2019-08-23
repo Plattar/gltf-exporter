@@ -20,7 +20,7 @@ namespace Plattar {
 			logo = (Texture2D) AssetDatabase.LoadAssetAtPath("Assets/PlattarExporter/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
 
 			Type inspectorType = Type.GetType("UnityEditor.InspectorWindow,UnityEditor.dll");
-			EditorWindow window = EditorWindow.GetWindow<PlattarExporter>(new Type[] {inspectorType});
+			EditorWindow window = EditorWindow.GetWindow<Exporter>(new Type[] {inspectorType});
 			window.Show();
 		}
 
