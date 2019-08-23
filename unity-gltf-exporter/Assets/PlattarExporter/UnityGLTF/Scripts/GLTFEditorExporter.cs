@@ -131,7 +131,7 @@ namespace UnityGLTF
 				Asset = new Asset
 				{
 					Version = "2.0",
-					Generator = generator.Length > 0 ? generator : "UnityGLTF (" + Application.unityVersion + ")"
+					Generator = generator.Length > 0 ? generator : "Plattar UnityGLTF (" + Application.unityVersion + ")"
 				},
 				Buffers = new List<GLTF.Schema.Buffer>(),
 				BufferViews = new List<BufferView>(),
@@ -860,6 +860,8 @@ namespace UnityGLTF
 				if (mrTex != null)
 				{
 					pbr.MetallicRoughnessTexture = ExportTextureInfo(mrTex);
+					// writing 1.0 does not export this for whatever reason
+					pbr.MetallicFactor = 0.99;
 					ExportTextureTransform(pbr.MetallicRoughnessTexture, material, "_MetallicRoughnessMap");
 				}
 			}
@@ -871,6 +873,8 @@ namespace UnityGLTF
 				{
 					var occTex = (material.HasProperty("_OcclusionMap") ? material.GetTexture("_OcclusionMap") as Texture2D : null);
 					pbr.MetallicRoughnessTexture = ExportTextureInfo(_textureCache.packOcclusionMetalRough(mgTex, occTex));
+					// writing 1.0 does not export this for whatever reason
+					pbr.MetallicFactor = 0.99;
 				}
 			}
 
