@@ -238,22 +238,6 @@ namespace UnityGLTF
 
 		private void exportAnimation()
 		{
-			/*
-			GLTF.Schema.Animation anim = new GLTF.Schema.Animation();
-			anim.Name = "Take 001";
-			for (int i = 0; i < _animatedNodes.Count; ++i)
-			{
-				Transform t = _animatedNodes[i];
-				exportAnimationFromNode(ref t, ref anim);
-
-				updateProgress(EXPORT_STEP.ANIMATIONS, i, _animatedNodes.Count);
-			}
-
-			if (anim.Channels.Count > 0 && anim.Samplers.Count > 0)
-			{
-				_root.Animations.Add(anim);
-			}
-			*/
 			for (int i = 0; i < _animatedNodes.Count; ++i)
 			{
 				Transform t = _animatedNodes[i];
@@ -1832,29 +1816,6 @@ namespace UnityGLTF
 		// Parses Animation/Animator component and generate a glTF animation for the active clip
 		public void exportAnimationFromNode(ref Transform transform/*, ref GLTF.Schema.Animation anim*/)
 		{
-			/*
-			Animator a = transform.GetComponent<Animator>();
-			if (a != null)
-			{
-				AnimationClip[] clips = AnimationUtility.GetAnimationClips(transform.gameObject);
-				for (int i = 0; i < clips.Length; i++)
-				{
-					//FIXME It seems not good to generate one animation per animator.
-					convertClipToGLTFAnimation(ref clips[i], ref transform, ref anim);
-				}
-			}
-
-			UnityEngine.Animation animation = transform.GetComponent<UnityEngine.Animation>();
-			if (animation != null)
-			{
-				AnimationClip[] clips = AnimationUtility.GetAnimationClips(transform.gameObject);
-				for (int i = 0; i < clips.Length; i++)
-				{
-					//FIXME It seems not good to generate one animation per animator.
-					convertClipToGLTFAnimation(ref clips[i], ref transform, ref anim);
-				}
-			}
-			*/
 			Animator a = transform.GetComponent<Animator>();
 
 			if (a != null) {
