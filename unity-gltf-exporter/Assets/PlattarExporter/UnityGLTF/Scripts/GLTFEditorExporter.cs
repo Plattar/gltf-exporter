@@ -834,7 +834,7 @@ namespace UnityGLTF
 			}
 			else if (material.HasProperty("_Glossiness"))
 			{
-				pbr.RoughnessFactor = 1 - material.GetFloat("_Glossiness");
+				pbr.RoughnessFactor = 1.0 - material.GetFloat("_Glossiness");
 			}
 
 			if (material.HasProperty("_MetallicRoughnessMap"))
@@ -843,10 +843,13 @@ namespace UnityGLTF
 
 				if (mrTex != null)
 				{
+					if (material.HasProperty("_GlossMapScale")) {
+						pbr.RoughnessFactor = 1.0 - material.GetFloat("_GlossMapScale");
+					}
+
 					pbr.MetallicRoughnessTexture = ExportTextureInfo(mrTex);
 					// writing 1.0 does not export this for whatever reason
 					pbr.MetallicFactor = 0.99;
-					pbr.RoughnessFactor = 0.99;
 					ExportTextureTransform(pbr.MetallicRoughnessTexture, material, "_MetallicRoughnessMap");
 				}
 			}
@@ -856,6 +859,10 @@ namespace UnityGLTF
 
 				if (mgTex != null)
 				{
+					if (material.HasProperty("_GlossMapScale")) {
+						pbr.RoughnessFactor = 1.0 - material.GetFloat("_GlossMapScale");
+					}
+
 					var occTex = (material.HasProperty("_OcclusionMap") ? material.GetTexture("_OcclusionMap") as Texture2D : null);
 					pbr.MetallicRoughnessTexture = ExportTextureInfo(_textureCache.packOcclusionMetalRough(mgTex, occTex));
 					// writing 1.0 does not export this for whatever reason
