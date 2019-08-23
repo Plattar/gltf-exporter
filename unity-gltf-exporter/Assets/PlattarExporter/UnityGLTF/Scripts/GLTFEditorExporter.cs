@@ -618,7 +618,7 @@ namespace UnityGLTF
 			material.DoubleSided = materialObj.HasProperty("_Cull") &&
 				materialObj.GetInt("_Cull") == (float)UnityEngine.Rendering.CullMode.Off;
 
-			if (materialObj.HasProperty("_EmissionColor"))
+			if (materialObj.IsKeywordEnabled("_EMISSION") && materialObj.HasProperty("_EmissionColor"))
 			{
 				material.EmissiveFactor = materialObj.GetColor("_EmissionColor").ToNumericsColor();
 			}
@@ -844,7 +844,7 @@ namespace UnityGLTF
 				if (mrTex != null)
 				{
 					if (material.HasProperty("_GlossMapScale")) {
-						pbr.RoughnessFactor = 1.0 - material.GetFloat("_GlossMapScale");
+						pbr.RoughnessFactor = material.GetFloat("_GlossMapScale");
 					}
 
 					pbr.MetallicRoughnessTexture = ExportTextureInfo(mrTex);
@@ -860,7 +860,7 @@ namespace UnityGLTF
 				if (mgTex != null)
 				{
 					if (material.HasProperty("_GlossMapScale")) {
-						pbr.RoughnessFactor = 1.0 - material.GetFloat("_GlossMapScale");
+						pbr.RoughnessFactor = material.GetFloat("_GlossMapScale");
 					}
 
 					var occTex = (material.HasProperty("_OcclusionMap") ? material.GetTexture("_OcclusionMap") as Texture2D : null);
