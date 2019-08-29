@@ -2219,21 +2219,32 @@ namespace UnityGLTF
 				throw new Exception("Accessors can not have a count of 0.");
 			}
 
+			// calculate center to re-pivot back into center mode
+			Vector3 centerPivot = Vector3.zero;
+
+			for (var i = 0; i < count; i++) {
+				centerPivot += arr[i];
+			}
+
+			centerPivot /= count;
+
 			var accessor = new Accessor();
 			accessor.ComponentType = GLTFComponentType.Float;
 			accessor.Count = count;
 			accessor.Type = GLTFAccessorAttributeType.VEC3;
 
-			float minX = arr[0].x;
-			float minY = arr[0].y;
-			float minZ = arr[0].z;
-			float maxX = arr[0].x;
-			float maxY = arr[0].y;
-			float maxZ = arr[0].z;
+			Vector3 arrZero = arr[0] - centerPivot;
+
+			float minX = arrZero.x;
+			float minY = arrZero.y;
+			float minZ = arrZero.z;
+			float maxX = arrZero.x;
+			float maxY = arrZero.y;
+			float maxZ = arrZero.z;
 
 			for (var i = 1; i < count; i++)
 			{
-				var cur = arr[i];
+				var cur = arr[i] - centerPivot;
 
 				if (cur.x < minX)
 				{
