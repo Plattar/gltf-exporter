@@ -10,6 +10,7 @@ namespace Plattar {
 		public static bool IsZip = true;
 		public static string LastEditorPath = "";
 		public static bool ExportAnimations = true;
+		public static bool RecalculatePivots = true;
 
 		public static void CompressDirectory(string source, string destination) {
 			// delete any files that exist

@@ -43,6 +43,7 @@ namespace Plattar {
 
 			EditorGUILayout.BeginVertical();
 			PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export animations", PlattarExporterOptions.ExportAnimations);
+			PlattarExporterOptions.RecalculatePivots = EditorGUILayout.Toggle("Recalculate pivots", PlattarExporterOptions.RecalculatePivots);
 
 			var foundGrids = GameObject.FindObjectsOfType<AlignmentScript>();
 
@@ -159,7 +160,8 @@ namespace Plattar {
 					if (PlattarExporterOptions.ExportAnimations == true) {
 						var exporter = new GLTFEditorExporter(new Transform[] { selectedObject.transform });
 						exporter.SaveGLTFandBin(newpath, selectionName);
-					} else {
+					} 
+					else {
 						var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform });
 						exporter.SaveGLTFandBin(newpath, selectionName);
 					}
