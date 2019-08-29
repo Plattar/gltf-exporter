@@ -37,7 +37,7 @@ namespace Plattar {
 			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
-			GUILayout.Label(logo);
+			GUILayout.Label(logo, GUILayout.Width(150), GUILayout.Height(150));
 			GUILayout.FlexibleSpace();
 			GUILayout.EndHorizontal();
 
