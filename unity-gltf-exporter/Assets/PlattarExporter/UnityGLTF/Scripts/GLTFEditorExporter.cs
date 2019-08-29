@@ -41,6 +41,7 @@ namespace UnityGLTF
 
 		private GLTFTextureUtilsCache _textureCache;
 		public bool ExportNames = true;
+		public static bool RecalculatePivots = false;
 
 		// Progress
 		public enum EXPORT_STEP
@@ -524,7 +525,12 @@ namespace UnityGLTF
 			AccessorId aPosition = null, aNormal = null, aTangent = null,
 				aTexcoord0 = null, aTexcoord1 = null, aColor0 = null;
 
-			aPosition = ExportAccessor(meshObj.vertices, true);
+			if (RecalculatePivots) {
+				aPosition = ExportAccessorPosition(meshObj.vertices, true);
+			}
+			else {
+				aPosition = ExportAccessor(meshObj.vertices, true);
+			}
 
 			if (meshObj.normals.Length != 0)
 				aNormal = ExportAccessor(meshObj.normals, true);
@@ -2202,6 +2208,91 @@ namespace UnityGLTF
 		static public string cleanNonAlphanumeric(string s)
 		{
 			return rgx.Replace(s, "");
+		}
+
+		private AccessorId ExportAccessorPosition(Vector3[] arr, bool switchHandedness=false)
+		{
+			var count = arr.Length;
+
+			if (count == 0)
+			{
+				throw new Exception("Accessors can not have a count of 0.");
+			}
+
+			var accessor = new Accessor();
+			accessor.ComponentType = GLTFComponentType.Float;
+			accessor.Count = count;
+			accessor.Type = GLTFAccessorAttributeType.VEC3;
+
+			float minX = arr[0].x;
+			float minY = arr[0].y;
+			float minZ = arr[0].z;
+			float maxX = arr[0].x;
+			float maxY = arr[0].y;
+			float maxZ = arr[0].z;
+
+			for (var i = 1; i < count; i++)
+			{
+				var cur = arr[i];
+
+				if (cur.x < minX)
+				{
+					minX = cur.x;
+				}
+				if (cur.y < minY)
+				{
+					minY = cur.y;
+				}
+				if (cur.z < minZ)
+				{
+					minZ = cur.z;
+				}
+				if (cur.x > maxX)
+				{
+					maxX = cur.x;
+				}
+				if (cur.y > maxY)
+				{
+					maxY = cur.y;
+				}
+				if (cur.z > maxZ)
+				{
+					maxZ = cur.z;
+				}
+			}
+
+			accessor.Min = new List<double> { minX, minY, minZ };
+			accessor.Max = new List<double> { maxX, maxY, maxZ };
+
+			var byteOffset = _bufferWriter.BaseStream.Position;
+
+			foreach (var vec in arr) {
+				if(switchHandedness)
+				{
+					Vector3 vect = vec.switchHandedness();
+					_bufferWriter.Write(vect.x);
+					_bufferWriter.Write(vect.y);
+					_bufferWriter.Write(vect.z);
+				}
+				else
+				{
+					_bufferWriter.Write(vec.x);
+					_bufferWriter.Write(vec.y);
+					_bufferWriter.Write(vec.z);
+				}
+			}
+
+			var byteLength = _bufferWriter.BaseStream.Position - byteOffset;
+
+			accessor.BufferView = ExportBufferView((int)byteOffset, (int)byteLength);
+
+			var id = new AccessorId {
+				Id = _root.Accessors.Count,
+				Root = _root
+			};
+			_root.Accessors.Add(accessor);
+
+			return id;
 		}
 	}
 }

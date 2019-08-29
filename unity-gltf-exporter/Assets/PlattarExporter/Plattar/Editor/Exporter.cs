@@ -159,10 +159,12 @@ namespace Plattar {
 				if (info.Exists) {
 					if (PlattarExporterOptions.ExportAnimations == true) {
 						var exporter = new GLTFEditorExporter(new Transform[] { selectedObject.transform });
+						GLTFEditorExporter.RecalculatePivots = PlattarExporterOptions.RecalculatePivots;
 						exporter.SaveGLTFandBin(newpath, selectionName);
 					} 
 					else {
 						var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform });
+						GLTFSceneExporter.RecalculatePivots = PlattarExporterOptions.RecalculatePivots;
 						exporter.SaveGLTFandBin(newpath, selectionName);
 					}
 
