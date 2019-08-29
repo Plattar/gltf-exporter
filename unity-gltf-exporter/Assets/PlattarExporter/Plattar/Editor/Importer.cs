@@ -17,16 +17,24 @@ namespace Plattar {
 
 		[MenuItem("Plattar/GLTF Importer")]
 		static void Init() {
-			logo = (Texture2D) AssetDatabase.LoadAssetAtPath("Assets/PlattarExporter/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
+			RefreshLogo();
 
 			Type inspectorType = Type.GetType("UnityEditor.InspectorWindow,UnityEditor.dll");
 			EditorWindow window = EditorWindow.GetWindow<Importer>(new Type[] {inspectorType});
 			window.Show();
 		}
 
+		static void RefreshLogo() {
+			if (logo == null) {
+				logo = (Texture2D) AssetDatabase.LoadAssetAtPath("Assets/PlattarExporter/Plattar/Editor/ExporterHeader.png", typeof(Texture2D));
+			}
+		}
+
 		void OnEnable() { }
 
 		void OnGUI() {
+			RefreshLogo();
+			
 			GUILayout.BeginHorizontal();
 			GUILayout.FlexibleSpace();
 			GUILayout.Label(logo);
