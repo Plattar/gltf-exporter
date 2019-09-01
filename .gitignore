@@ -8,3 +8,5 @@ unity-gltf-exporter/obj/
 unity-gltf-exporter/\.vscode/
 unity-gltf-exporter/Logs/
 *.csproj
+
+unity-gltf-exporter/Assets/GLTFImports/
