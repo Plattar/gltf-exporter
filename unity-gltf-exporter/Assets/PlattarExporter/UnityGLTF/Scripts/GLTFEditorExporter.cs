@@ -2219,21 +2219,12 @@ namespace UnityGLTF
 				throw new Exception("Accessors can not have a count of 0.");
 			}
 
-			// calculate center to re-pivot back into center mode
-			Vector3 centerPivot = Vector3.zero;
-
-			for (var i = 0; i < count; i++) {
-				centerPivot += arr[i];
-			}
-
-			centerPivot /= count;
-
 			var accessor = new Accessor();
 			accessor.ComponentType = GLTFComponentType.Float;
 			accessor.Count = count;
 			accessor.Type = GLTFAccessorAttributeType.VEC3;
 
-			Vector3 arrZero = arr[0] - centerPivot;
+			Vector3 arrZero = arr[0];
 
 			float minX = arrZero.x;
 			float minY = arrZero.y;
@@ -2244,7 +2235,7 @@ namespace UnityGLTF
 
 			for (var i = 1; i < count; i++)
 			{
-				var cur = arr[i] - centerPivot;
+				var cur = arr[i];
 
 				if (cur.x < minX)
 				{
@@ -2271,6 +2262,31 @@ namespace UnityGLTF
 					maxZ = cur.z;
 				}
 			}
+
+			float pivotX = (minX + maxX);
+			float pivotY = (minY + maxY);
+			float pivotZ = (minZ + maxZ);
+			//float pivotX = maxX;
+			//float pivotY = maxY;
+			//float pivotZ = maxZ;
+
+			Debug.Log($"Pivot X={pivotX} Y={pivotY} Z={pivotZ}");
+			Debug.Log("Before");
+			Debug.Log($"Min X={minX} Y={minY} Z={minZ}");
+			Debug.Log($"Max X={maxX} Y={maxY} Z={maxZ}");
+
+			minX -= pivotX;
+			maxX -= pivotX;
+
+			minY -= pivotY;
+			maxY -= pivotY;
+
+			minZ -= pivotZ;
+			maxZ -= pivotZ;
+
+			Debug.Log("After");
+			Debug.Log($"Min X={minX} Y={minY} Z={minZ}");
+			Debug.Log($"Max X={maxX} Y={maxY} Z={maxZ}");
 
 			accessor.Min = new List<double> { minX, minY, minZ };
 			accessor.Max = new List<double> { maxX, maxY, maxZ };
