@@ -27,7 +27,6 @@ namespace UnityGLTF
 		private readonly Dictionary<UnityEngine.Mesh, MeshPrimitive[]> _meshToPrims = new Dictionary<UnityEngine.Mesh, MeshPrimitive[]>();
 
 		public bool ExportNames = true;
-		public static bool RecalculatePivots = false;
 
 		/// <summary>
 		/// Create a GLTFExporter that exports out a transform
@@ -302,12 +301,7 @@ namespace UnityGLTF
 			AccessorId aPosition = null, aNormal = null, aTangent = null,
 				aTexcoord0 = null, aTexcoord1 = null, aColor0 = null;
 
-			if (RecalculatePivots) {
-				aPosition = ExportAccessorPosition(InvertZ(meshObj.vertices));
-			}
-			else {
-				aPosition = ExportAccessor(InvertZ(meshObj.vertices));
-			}
+			aPosition = ExportAccessor(InvertZ(meshObj.vertices));
 
 			if (meshObj.normals.Length != 0)
 				aNormal = ExportAccessor(InvertZ(meshObj.normals));
@@ -1280,81 +1274,6 @@ namespace UnityGLTF
 			}
 
 			return null;
-		}
-
-		private AccessorId ExportAccessorPosition(Vector3[] arr)
-		{
-			var count = arr.Length;
-
-			if (count == 0)
-			{
-				throw new Exception("Accessors can not have a count of 0.");
-			}
-
-			var accessor = new Accessor();
-			accessor.ComponentType = GLTFComponentType.Float;
-			accessor.Count = count;
-			accessor.Type = GLTFAccessorAttributeType.VEC3;
-
-			float minX = arr[0].x;
-			float minY = arr[0].y;
-			float minZ = arr[0].z;
-			float maxX = arr[0].x;
-			float maxY = arr[0].y;
-			float maxZ = arr[0].z;
-
-			for (var i = 1; i < count; i++)
-			{
-				var cur = arr[i];
-
-				if (cur.x < minX)
-				{
-					minX = cur.x;
-				}
-				if (cur.y < minY)
-				{
-					minY = cur.y;
-				}
-				if (cur.z < minZ)
-				{
-					minZ = cur.z;
-				}
-				if (cur.x > maxX)
-				{
-					maxX = cur.x;
-				}
-				if (cur.y > maxY)
-				{
-					maxY = cur.y;
-				}
-				if (cur.z > maxZ)
-				{
-					maxZ = cur.z;
-				}
-			}
-
-			accessor.Min = new List<double> { minX, minY, minZ };
-			accessor.Max = new List<double> { maxX, maxY, maxZ };
-
-			var byteOffset = _bufferWriter.BaseStream.Position;
-
-			foreach (var vec in arr) {
-				_bufferWriter.Write(vec.x);
-				_bufferWriter.Write(vec.y);
-				_bufferWriter.Write(vec.z);
-			}
-
-			var byteLength = _bufferWriter.BaseStream.Position - byteOffset;
-
-			accessor.BufferView = ExportBufferView((int)byteOffset, (int)byteLength);
-
-			var id = new AccessorId {
-				Id = _root.Accessors.Count,
-				Root = _root
-			};
-			_root.Accessors.Add(accessor);
-
-			return id;
 		}
 	}
 }

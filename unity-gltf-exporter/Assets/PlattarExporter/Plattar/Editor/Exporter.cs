@@ -43,7 +43,6 @@ namespace Plattar {
 
 			EditorGUILayout.BeginVertical();
 			PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export animations", PlattarExporterOptions.ExportAnimations);
-			PlattarExporterOptions.RecalculatePivots = EditorGUILayout.Toggle("Recalculate pivots", PlattarExporterOptions.RecalculatePivots);
 
 			var foundGrids = GameObject.FindObjectsOfType<AlignmentScript>();
 
@@ -112,6 +111,10 @@ namespace Plattar {
 				EditorGUILayout.Separator();
 				EditorGUILayout.BeginVertical();
 
+				if (GUILayout.Button("Realign Pivot")) {
+					CenterMesh(selectedObject);
+				}
+
 				if (GUILayout.Button("Export " + selectionName + " to GLTF")) {
 					if (GenerateGLTFZipped(selectedObject) != null) {
 						EditorUtility.DisplayDialog("Successful Export", "GLTF Exported and Zipped Successfully", "OK");
@@ -159,12 +162,10 @@ namespace Plattar {
 				if (info.Exists) {
 					if (PlattarExporterOptions.ExportAnimations == true) {
 						var exporter = new GLTFEditorExporter(new Transform[] { selectedObject.transform });
-						GLTFEditorExporter.RecalculatePivots = PlattarExporterOptions.RecalculatePivots;
 						exporter.SaveGLTFandBin(newpath, selectionName);
 					} 
 					else {
 						var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform });
-						GLTFSceneExporter.RecalculatePivots = PlattarExporterOptions.RecalculatePivots;
 						exporter.SaveGLTFandBin(newpath, selectionName);
 					}
 
@@ -178,6 +179,60 @@ namespace Plattar {
 			}
 
 			return null;
+		}
+
+		/**
+		 * O(2n) operation
+		 */
+		public static void CenterMesh(GameObject root) {
+			MeshFilter[] filters = root.GetComponentsInChildren<MeshFilter>();
+
+			Bounds totalBounds = new Bounds();
+			
+			int count = filters.Length;
+
+			// find the center pivot of ALL meshes
+			for (int i = 0; i < count; i++) {
+				if (filters[i] != null) {
+					Mesh mesh = filters[i].sharedMesh;
+
+					if (mesh != null) {
+						Vector3[] positions = mesh.vertices;
+						int pCount = positions.Length;
+
+						for (int j = 0; j < pCount; j++) {
+							totalBounds.Encapsulate(positions[j]);
+						}
+					}
+				}
+			}
+
+			float pivotX = (totalBounds.min.x + totalBounds.max.x) / 2.0f;
+			float pivotY = (totalBounds.min.y + totalBounds.max.y) / 2.0f;
+			float pivotZ = (totalBounds.min.z + totalBounds.max.z) / 2.0f;
+
+			Vector3 center = new Vector3(pivotX, pivotY, pivotZ);
+
+			// we calculate the min and max, we require this data to center
+			// everything properly
+
+			// now we need to displace all vertices, so loop again
+			for (int i = 0; i < count; i++) {
+				if (filters[i] != null) {
+					Mesh mesh = filters[i].sharedMesh;
+
+					if (mesh != null) {
+						Vector3[] positions = mesh.vertices;
+						int pCount = positions.Length;
+
+						for (int j = 0; j < pCount; j++) {
+							positions[j] = positions[j] - center;
+						}
+
+						mesh.vertices = positions;
+					}
+				}
+			}
 		}
 	}
 }
