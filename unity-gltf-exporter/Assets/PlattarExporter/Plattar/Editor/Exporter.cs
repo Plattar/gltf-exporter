@@ -219,7 +219,7 @@ namespace Plattar {
 			// now we need to displace all vertices, so loop again
 			for (int i = 0; i < count; i++) {
 				if (filters[i] != null) {
-					Mesh mesh = filters[i].sharedMesh;
+					Mesh mesh = Mesh.Instantiate(filters[i].sharedMesh);
 
 					if (mesh != null) {
 						Vector3[] positions = mesh.vertices;
@@ -231,6 +231,8 @@ namespace Plattar {
 
 						mesh.vertices = positions;
 					}
+
+					filters[i].sharedMesh = mesh;
 				}
 			}
 		}
