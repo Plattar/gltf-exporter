@@ -111,11 +111,16 @@ namespace Plattar {
 				EditorGUILayout.Separator();
 				EditorGUILayout.BeginVertical();
 
-				if (GUILayout.Button("Realign Pivot")) {
+				EditorGUILayout.HelpBox("This will permanently re-align the mesh pivot point to the center", MessageType.Warning);
+				if (GUILayout.Button("Realign Pivot Center")) {
 					CenterMesh(selectedObject);
 				}
 
-				if (GUILayout.Button("Export " + selectionName + " to GLTF")) {
+				if (GUILayout.Button($"Pin to grid")) {
+					PinToGrid(selectedObject);
+				}
+
+				if (GUILayout.Button($"Export {selectionName} to GLTF")) {
 					if (GenerateGLTFZipped(selectedObject) != null) {
 						EditorUtility.DisplayDialog("Successful Export", "GLTF Exported and Zipped Successfully", "OK");
 					}
@@ -179,6 +184,42 @@ namespace Plattar {
 			}
 
 			return null;
+		}
+
+		public static void PinToGrid(GameObject root) {
+			MeshFilter[] filters = root.GetComponentsInChildren<MeshFilter>();
+
+			Bounds totalBounds = new Bounds();
+			
+			int count = filters.Length;
+
+			// find the center pivot of ALL meshes
+			for (int i = 0; i < count; i++) {
+				if (filters[i] != null) {
+					Mesh mesh = filters[i].sharedMesh;
+
+					if (mesh != null) {
+						Vector3[] positions = mesh.vertices;
+						int pCount = positions.Length;
+
+						for (int j = 0; j < pCount; j++) {
+							// ensure we are using the world position of the Transform
+							totalBounds.Encapsulate(filters[i].gameObject.transform.TransformPoint(positions[j]));
+						}
+					}
+				}
+			}
+
+			Vector3 position = root.gameObject.transform.position;
+			
+			if (totalBounds.min.y < 0.0f) {
+				position.y = Math.Abs(totalBounds.min.y - position.y);
+			}
+			else {
+				position.y = totalBounds.max.y - position.y;
+			}
+
+			root.gameObject.transform.position = position;
 		}
 
 		/**
