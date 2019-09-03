@@ -14,6 +14,7 @@ namespace Plattar {
 
 		GameObject selectedObject;
 		static Texture logo;
+		static List<int> pivotCheck = new List<int>();
 
 		[MenuItem("Plattar/GLTF Exporter")]
 		static void Init() {
@@ -116,8 +117,11 @@ namespace Plattar {
 					CenterMesh(selectedObject);
 				}
 
-				if (GUILayout.Button($"Pin to grid")) {
-					PinToGrid(selectedObject);
+				if (pivotCheck.Contains(selectedObject.GetInstanceID())) {
+					// only support center-pivot objects for now
+					if (GUILayout.Button($"Pin to grid")) {
+						PinToGrid(selectedObject);
+					}
 				}
 
 				if (GUILayout.Button($"Export {selectionName} to GLTF")) {
@@ -276,6 +280,8 @@ namespace Plattar {
 					filters[i].sharedMesh = mesh;
 				}
 			}
+
+			pivotCheck.Add(root.GetInstanceID());
 		}
 	}
 }
