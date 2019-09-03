@@ -5,7 +5,7 @@ _GLTF Exporter_ is a [Unity3D](https://unity3d.com/) Editor Tool that allows exp
 
 ***
 
-### Before usage
+### Before usage 
 
 Ensure to remove all converters that depend on the [UnityGLTF](https://github.com/KhronosGroup/UnityGLTF). This is to ensure there are no script clashes or compatibility issues.
 
@@ -15,7 +15,7 @@ Grab the latest Unity3D Package release from the [releases](https://github.com/P
 
 Once the _GLTF Exporter_ tool has been imported you will see a new Toolbar in Unity3D.
 <h3 align="left">
-  <img src="graphics/toolbar.png?raw=true" alt="Unity3D Toolbar" width="600">
+  <img src="graphics/toolbar.png?raw=true" alt="Unity3D Toolbar" width="400">
 </h3>
 
 Clicking on the _Plattar_ Toolbar will present the following editor wizard.
@@ -31,9 +31,10 @@ Either select or drag and drop the **GameObject** you'd like to export and click
 You will be asked for a destination to export the GLTF files. The exporter will automatically zip all files and textures.
 
 Supported Unity objects and features so far:
-- Scene objects such as transforms and meshes
-- PBR materials (both *Standard* and *Standard (Specular setup)* for metal/smoothness and specular/smoothness respectively). Other materials may also be exported but not with all their channels.
-- Solid and skinning animation (note that custom scripts or *humanoid* skeletal animation are not exported yet).
+
+* Scene objects such as transforms and meshes
+* PBR materials (both *Standard* and *Standard (Specular setup)* for metal/smoothness and specular/smoothness respectively). Other materials may also be exported but not with all their channels.
+* Solid and skinning animation (note that custom scripts or *humanoid* skeletal animation are not exported yet).
 
 *(Note that animation is still in beta)*
 
@@ -53,5 +54,6 @@ This plugin is being updated with glTF file format. It's strongly recommended to
 
 This tool relies on the following open source projects.
 
-- [KhronosGroup UnityGLTF](https://github.com/KhronosGroup/UnityGLTF)
-- [Sketchfab UnityGLTF](https://github.com/sketchfab/UnityGLTF)
+* [KhronosGroup UnityGLTF](https://github.com/KhronosGroup/UnityGLTF)
+* [Sketchfab UnityGLTF](https://github.com/sketchfab/UnityGLTF)
+
