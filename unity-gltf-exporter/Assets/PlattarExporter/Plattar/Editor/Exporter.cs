@@ -112,9 +112,10 @@ namespace Plattar {
 				EditorGUILayout.Separator();
 				EditorGUILayout.BeginVertical();
 
-				EditorGUILayout.HelpBox("This will permanently re-align the mesh pivot point to the center", MessageType.Warning);
 				if (GUILayout.Button("Realign Pivot Center")) {
-					CenterMesh(selectedObject);
+					if (EditorUtility.DisplayDialog("Re-Align Mesh Pivots?", "Are you sure you want to re-align the pivot center? This operation will modify mesh data and cannot be reversed, continue?", "Yes", "Cancel")) {
+						CenterMesh(selectedObject);
+					}
 				}
 
 				if (pivotCheck.Contains(selectedObject.GetInstanceID())) {
