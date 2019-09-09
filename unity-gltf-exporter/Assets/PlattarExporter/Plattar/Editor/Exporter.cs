@@ -14,7 +14,7 @@ namespace Plattar {
 
 		GameObject selectedObject;
 		static Texture logo;
-		static List<int> pivotCheck = new List<int>();
+		static readonly List<int> pivotCheck = new List<int>();
 
 		[MenuItem("Plattar/GLTF Exporter")]
 		static void Init() {
