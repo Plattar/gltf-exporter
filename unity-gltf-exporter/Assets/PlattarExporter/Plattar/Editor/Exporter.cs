@@ -43,7 +43,6 @@ namespace Plattar {
 			GUILayout.EndHorizontal();
 
 			EditorGUILayout.BeginVertical();
-			PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export animations", PlattarExporterOptions.ExportAnimations);
 
 			var foundGrids = GameObject.FindObjectsOfType<AlignmentScript>();
 
@@ -68,7 +67,6 @@ namespace Plattar {
 			EditorGUILayout.Separator();
 
 			EditorGUILayout.BeginVertical();
-			EditorGUILayout.HelpBox("Select a GameObject from the scene to export into GLTF", MessageType.Info);
 			selectedObject = (GameObject) EditorGUILayout.ObjectField("Export Object", selectedObject, typeof(GameObject), true);
 			EditorGUILayout.EndVertical();
 
@@ -111,6 +109,9 @@ namespace Plattar {
 
 				EditorGUILayout.Separator();
 
+				ShowAnimationModifiersUI();
+				EditorGUILayout.Separator();
+
 				ShowMeshModifiersUI(selectedObject);
 				EditorGUILayout.Separator();
 
@@ -132,7 +133,7 @@ namespace Plattar {
 		private static void ShowMeshModifiersUI(GameObject selectedObject) {
 			EditorGUILayout.BeginVertical("HelpBox");
 
-			EditorGUILayout.LabelField("Mesh Modifiers");
+			EditorGUILayout.LabelField("Mesh Options");
 
 			if (GUILayout.Button("Realign Pivot Center")) {
 				if (EditorUtility.DisplayDialog("Re-Align Mesh Pivots?", "Are you sure you want to re-align the pivot center? This operation will modify mesh data and cannot be reversed, continue?", "Yes", "Cancel")) {
@@ -140,12 +141,14 @@ namespace Plattar {
 				}
 			}
 
-			if (pivotCheck.Contains(selectedObject.GetInstanceID())) {
-				// only support center-pivot objects for now
-				if (GUILayout.Button($"Pin to grid")) {
-					PinToGrid(selectedObject);
-				}
+			EditorGUI.BeginDisabledGroup(!pivotCheck.Contains(selectedObject.GetInstanceID()));
+
+			// only support center-pivot objects for now
+			if (GUILayout.Button($"Pin to grid")) {
+				PinToGrid(selectedObject);
 			}
+
+			EditorGUI.EndDisabledGroup();
 
 			EditorGUILayout.EndVertical();
 		}
@@ -153,9 +156,25 @@ namespace Plattar {
 		private static void ShowTextureModifiersUI() {
 			EditorGUILayout.BeginVertical("HelpBox");
 
-			EditorGUILayout.LabelField("Texture Modifiers");
+			EditorGUILayout.LabelField("Texture Options");
 
 			GLTFTextureUtils.ForceUsePNG = EditorGUILayout.Toggle("Force Export PNG Textures", GLTFTextureUtils.ForceUsePNG);
+
+			EditorGUI.BeginDisabledGroup(GLTFTextureUtils.ForceUsePNG);
+
+			GLTFTextureUtils.JPGQuality = EditorGUILayout.IntSlider("Texture Quality", GLTFTextureUtils.JPGQuality, 0, 100);
+
+			EditorGUI.EndDisabledGroup();
+
+			EditorGUILayout.EndVertical();
+		}
+
+		private static void ShowAnimationModifiersUI() {
+			EditorGUILayout.BeginVertical("HelpBox");
+
+			EditorGUILayout.LabelField("Animation Options");
+
+			PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export animations", PlattarExporterOptions.ExportAnimations);
 
 			EditorGUILayout.EndVertical();
 		}

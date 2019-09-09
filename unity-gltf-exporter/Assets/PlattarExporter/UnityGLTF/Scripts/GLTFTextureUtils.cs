@@ -166,6 +166,10 @@ public class GLTFTextureUtils
 
 	public static bool useJPGTexture(Texture2D texture)
 	{
+		if (ForceUsePNG == true) {
+			return false;
+		}
+		
 		switch(texture.format)
 		{
 			case TextureFormat.RGB24:
