@@ -10,6 +10,9 @@ public class GLTFTextureUtils
 	private static string _convertBump = "GLTF/BumpToNormal";
 	public static bool _useOriginalImages = true;
 
+	public static bool ForceUsePNG = false;
+	public static int JPGQuality = 75;
+
 	public static void setUseOriginalImage(bool useOriginal)
 	{
 		_useOriginalImages = useOriginal;
@@ -23,8 +26,22 @@ public class GLTFTextureUtils
 	public static string writeTextureOnDisk(Texture2D texture, string outputPath, bool updateExtension=false)
 	{
 		string finalOutputPath = outputPath;
-		byte[] finalImageData = Path.GetExtension(finalOutputPath) == ".jpg" ? texture.EncodeToJPG() : texture.EncodeToPNG();
+		string ext = Path.GetExtension(finalOutputPath);
 
+		byte[] finalImageData;
+
+		if (ForceUsePNG) {
+			finalImageData = texture.EncodeToPNG();
+
+			if (ext == ".jpg" || ext == ".jpeg") {
+				finalOutputPath = finalOutputPath.Substring(0, finalOutputPath.Length - ext.Length);
+				finalOutputPath += ".png";
+			}
+		}
+		else {
+			finalImageData = ext == ".jpg" ? texture.EncodeToJPG(JPGQuality) : texture.EncodeToPNG();
+		}
+		
 		File.WriteAllBytes(finalOutputPath, finalImageData);
 		AssetDatabase.Refresh();
 
