@@ -110,20 +110,14 @@ namespace Plattar {
 				}
 
 				EditorGUILayout.Separator();
+
+				ShowMeshModifiersUI(selectedObject);
+				EditorGUILayout.Separator();
+
+				ShowTextureModifiersUI();
+				EditorGUILayout.Separator();
+				
 				EditorGUILayout.BeginVertical();
-
-				if (GUILayout.Button("Realign Pivot Center")) {
-					if (EditorUtility.DisplayDialog("Re-Align Mesh Pivots?", "Are you sure you want to re-align the pivot center? This operation will modify mesh data and cannot be reversed, continue?", "Yes", "Cancel")) {
-						CenterMesh(selectedObject);
-					}
-				}
-
-				if (pivotCheck.Contains(selectedObject.GetInstanceID())) {
-					// only support center-pivot objects for now
-					if (GUILayout.Button($"Pin to grid")) {
-						PinToGrid(selectedObject);
-					}
-				}
 
 				if (GUILayout.Button($"Export {selectionName} to GLTF")) {
 					if (GenerateGLTFZipped(selectedObject) != null) {
@@ -133,6 +127,37 @@ namespace Plattar {
 
 				EditorGUILayout.EndVertical();
 			}
+		}
+
+		private static void ShowMeshModifiersUI(GameObject selectedObject) {
+			EditorGUILayout.BeginVertical("HelpBox");
+
+			EditorGUILayout.LabelField("Mesh Modifiers");
+
+			if (GUILayout.Button("Realign Pivot Center")) {
+				if (EditorUtility.DisplayDialog("Re-Align Mesh Pivots?", "Are you sure you want to re-align the pivot center? This operation will modify mesh data and cannot be reversed, continue?", "Yes", "Cancel")) {
+					CenterMesh(selectedObject);
+				}
+			}
+
+			if (pivotCheck.Contains(selectedObject.GetInstanceID())) {
+				// only support center-pivot objects for now
+				if (GUILayout.Button($"Pin to grid")) {
+					PinToGrid(selectedObject);
+				}
+			}
+
+			EditorGUILayout.EndVertical();
+		}
+
+		private static void ShowTextureModifiersUI() {
+			EditorGUILayout.BeginVertical("HelpBox");
+
+			EditorGUILayout.LabelField("Texture Modifiers");
+
+			GLTFTextureUtils.ForceUsePNG = EditorGUILayout.Toggle("Force Export PNG Textures", GLTFTextureUtils.ForceUsePNG);
+
+			EditorGUILayout.EndVertical();
 		}
 
 		/**

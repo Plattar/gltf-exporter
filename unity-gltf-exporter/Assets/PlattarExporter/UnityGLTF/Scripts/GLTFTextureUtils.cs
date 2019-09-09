@@ -30,7 +30,7 @@ public class GLTFTextureUtils
 
 		byte[] finalImageData;
 
-		if (ForceUsePNG) {
+		if (ForceUsePNG == true) {
 			finalImageData = texture.EncodeToPNG();
 
 			if (ext == ".jpg" || ext == ".jpeg") {
