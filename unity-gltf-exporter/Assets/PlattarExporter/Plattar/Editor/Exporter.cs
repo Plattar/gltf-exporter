@@ -90,7 +90,7 @@ namespace Plattar {
 
 				if (checkScripts != null && checkScripts.Length > 0) {
 					EditorGUILayout.BeginVertical();
-					EditorGUILayout.HelpBox("Your selected GameObject or it's children contains an Alignment Grid", MessageType.Error);
+					EditorGUILayout.HelpBox("Your selected GameObject or its children contains an Alignment Grid", MessageType.Error);
 					EditorGUILayout.EndVertical();
 
 					return;
@@ -101,7 +101,7 @@ namespace Plattar {
 
 				if ((meshes == null || meshes.Length <= 0) && (skinnedMeshes == null || skinnedMeshes.Length <= 0)) {
 					EditorGUILayout.BeginVertical();
-					EditorGUILayout.HelpBox("Your selected GameObject or it's children have no Geometry", MessageType.Error);
+					EditorGUILayout.HelpBox("Your selected GameObject or its children have no Geometry", MessageType.Error);
 					EditorGUILayout.EndVertical();
 
 					return;
