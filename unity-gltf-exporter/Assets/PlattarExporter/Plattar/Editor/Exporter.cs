@@ -12,16 +12,9 @@ using UnityGLTF;
 namespace Plattar {
 	public class Exporter : EditorWindow {
 
-		enum BoundsExportOption {
-			None = 0,
-			Local = 1,
-			World = 2
-		}
-
 		GameObject selectedObject;
 		static Texture logo;
 		static readonly List<int> pivotCheck = new List<int>();
-		BoundsExportOption boundsExportOption = BoundsExportOption.Local;
 
 		[MenuItem("Plattar/GLTF Exporter")]
 		static void Init() {
@@ -189,21 +182,18 @@ namespace Plattar {
 			EditorGUILayout.EndVertical();
 		}
 
-		private void ShowMinMaxModifiersUI() {
+		private static void ShowMinMaxModifiersUI() {
 			EditorGUILayout.BeginVertical("HelpBox");
 
 			EditorGUILayout.LabelField("Bounds Options");
 
-			boundsExportOption = (BoundsExportOption)EditorGUILayout.EnumPopup("Export Min-Max", boundsExportOption);
+			GLTFUtils.boundsExportOption = (GLTFUtils.BoundsExportOption)EditorGUILayout.EnumPopup("Export Min-Max", GLTFUtils.boundsExportOption);
 
-			if (boundsExportOption == BoundsExportOption.None) {
+			if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.None) {
 				EditorGUILayout.HelpBox("GLTF Bounds will not be exported, this could impact rendering performance", MessageType.Warning);
 			}
 
 			EditorGUILayout.EndVertical();
-
-			GLTFUtils.ExportPositionMinMax = boundsExportOption == BoundsExportOption.None ? false : true;
-			GLTFUtils.ExportPositionMinMaxWorld = boundsExportOption == BoundsExportOption.World ? true : false;
 		}
 
 		/**

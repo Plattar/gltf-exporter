@@ -11,8 +11,14 @@ using CurveExtended;
 
 public class GLTFUtils
 {
-	public static bool ExportPositionMinMax = true;
-	public static bool ExportPositionMinMaxWorld = false;
+	public enum BoundsExportOption {
+		None = 0,
+		Local = 1,
+		World = 2
+	}
+	
+	public static BoundsExportOption boundsExportOption = BoundsExportOption.Local;
+	
 	public enum WorkflowMode
 	{
 		Specular,
