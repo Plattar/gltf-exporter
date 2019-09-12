@@ -168,9 +168,9 @@ namespace Plattar {
 
 			EditorGUILayout.LabelField("Texture Options");
 
-			GLTFTextureUtils.ForceUsePNG = EditorGUILayout.Toggle("Force Export PNG Textures", GLTFTextureUtils.ForceUsePNG);
+			GLTFTextureUtils.textureOption = (GLTFTextureUtils.TextureExportOption)EditorGUILayout.EnumPopup("Force Texture Conversion", GLTFTextureUtils.textureOption);
 
-			EditorGUI.BeginDisabledGroup(GLTFTextureUtils.ForceUsePNG);
+			EditorGUI.BeginDisabledGroup(GLTFTextureUtils.textureOption == GLTFTextureUtils.TextureExportOption.PNG);
 
 			GLTFTextureUtils.JPGQuality = EditorGUILayout.IntSlider("Texture Quality", GLTFTextureUtils.JPGQuality, 0, 100);
 
@@ -194,13 +194,16 @@ namespace Plattar {
 
 			EditorGUILayout.LabelField("Bounds Options");
 
-			boundsExportOption = (BoundsExportOption)EditorGUILayout.EnumPopup("Export Min-Max ", boundsExportOption);
+			boundsExportOption = (BoundsExportOption)EditorGUILayout.EnumPopup("Export Min-Max", boundsExportOption);
 
 			if (boundsExportOption == BoundsExportOption.None) {
 				EditorGUILayout.HelpBox("GLTF Bounds will not be exported, this could impact rendering performance", MessageType.Warning);
 			}
 
 			EditorGUILayout.EndVertical();
+
+			GLTFUtils.ExportPositionMinMax = boundsExportOption == BoundsExportOption.None ? false : true;
+			GLTFUtils.ExportPositionMinMaxWorld = boundsExportOption == BoundsExportOption.World ? true : false;
 		}
 
 		/**

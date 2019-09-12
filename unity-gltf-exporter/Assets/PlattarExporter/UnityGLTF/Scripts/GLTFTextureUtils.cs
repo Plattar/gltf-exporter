@@ -5,12 +5,17 @@ using System.IO;
 
 public class GLTFTextureUtils
 {
+	public enum TextureExportOption {
+		None = 0,
+		JPG = 1,
+		PNG = 2
+	}
 	private static string _flipTexture = "GLTF/FlipTexture";
 	private static string _packOcclusionMetalRough = "GLTF/PackOcclusionMetalRough";
 	private static string _convertBump = "GLTF/BumpToNormal";
 	public static bool _useOriginalImages = true;
 
-	public static bool ForceUsePNG = false;
+	public static TextureExportOption textureOption = TextureExportOption.None;
 	public static int JPGQuality = 75;
 
 	public static void setUseOriginalImage(bool useOriginal)
@@ -30,12 +35,20 @@ public class GLTFTextureUtils
 
 		byte[] finalImageData;
 
-		if (ForceUsePNG == true) {
+		if (textureOption == TextureExportOption.PNG) {
 			finalImageData = texture.EncodeToPNG();
 
 			if (ext == ".jpg" || ext == ".jpeg") {
 				finalOutputPath = finalOutputPath.Substring(0, finalOutputPath.Length - ext.Length);
 				finalOutputPath += ".png";
+			}
+		}
+		else if (textureOption == TextureExportOption.JPG) {
+			finalImageData = texture.EncodeToJPG(JPGQuality);
+
+			if (ext == ".png") {
+				finalOutputPath = finalOutputPath.Substring(0, finalOutputPath.Length - ext.Length);
+				finalOutputPath += ".jpg";
 			}
 		}
 		else {
@@ -166,8 +179,12 @@ public class GLTFTextureUtils
 
 	public static bool useJPGTexture(Texture2D texture)
 	{
-		if (ForceUsePNG == true) {
+		if (textureOption == TextureExportOption.PNG) {
 			return false;
+		}
+
+		if (textureOption == TextureExportOption.JPG) {
+			return true;
 		}
 		
 		switch(texture.format)
