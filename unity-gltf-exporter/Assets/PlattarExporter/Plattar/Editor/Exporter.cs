@@ -190,7 +190,7 @@ namespace Plattar {
 			GLTFUtils.boundsExportOption = (GLTFUtils.BoundsExportOption)EditorGUILayout.EnumPopup("Export Min-Max", GLTFUtils.boundsExportOption);
 
 			if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.None) {
-				EditorGUILayout.HelpBox("GLTF Bounds will not be exported, this could impact rendering performance", MessageType.Warning);
+				EditorGUILayout.HelpBox("GLTF Bounds will not be exported, this could break or impact rendering performance", MessageType.Warning);
 			}
 
 			EditorGUILayout.EndVertical();
