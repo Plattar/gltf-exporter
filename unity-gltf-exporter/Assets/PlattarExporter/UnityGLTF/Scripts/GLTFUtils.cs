@@ -11,6 +11,8 @@ using CurveExtended;
 
 public class GLTFUtils
 {
+	public static bool ExportPositionMinMax = true;
+	public static bool ExportPositionMinMaxWorld = false;
 	public enum WorkflowMode
 	{
 		Specular,

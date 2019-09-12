@@ -12,9 +12,16 @@ using UnityGLTF;
 namespace Plattar {
 	public class Exporter : EditorWindow {
 
+		enum BoundsExportOption {
+			None = 0,
+			Local = 1,
+			World = 2
+		}
+
 		GameObject selectedObject;
 		static Texture logo;
 		static readonly List<int> pivotCheck = new List<int>();
+		BoundsExportOption boundsExportOption = BoundsExportOption.Local;
 
 		[MenuItem("Plattar/GLTF Exporter")]
 		static void Init() {
@@ -117,6 +124,9 @@ namespace Plattar {
 
 				ShowTextureModifiersUI();
 				EditorGUILayout.Separator();
+
+				ShowMinMaxModifiersUI();
+				EditorGUILayout.Separator();
 				
 				EditorGUILayout.BeginVertical();
 
@@ -144,7 +154,7 @@ namespace Plattar {
 			EditorGUI.BeginDisabledGroup(!pivotCheck.Contains(selectedObject.GetInstanceID()));
 
 			// only support center-pivot objects for now
-			if (GUILayout.Button($"Pin to grid")) {
+			if (GUILayout.Button($"Pin to Alignment Grid")) {
 				PinToGrid(selectedObject);
 			}
 
@@ -174,7 +184,21 @@ namespace Plattar {
 
 			EditorGUILayout.LabelField("Animation Options");
 
-			PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export animations", PlattarExporterOptions.ExportAnimations);
+			PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export Animations", PlattarExporterOptions.ExportAnimations);
+
+			EditorGUILayout.EndVertical();
+		}
+
+		private void ShowMinMaxModifiersUI() {
+			EditorGUILayout.BeginVertical("HelpBox");
+
+			EditorGUILayout.LabelField("Bounds Options");
+
+			boundsExportOption = (BoundsExportOption)EditorGUILayout.EnumPopup("Export Min-Max ", boundsExportOption);
+
+			if (boundsExportOption == BoundsExportOption.None) {
+				EditorGUILayout.HelpBox("GLTF Bounds will not be exported, this could impact rendering performance", MessageType.Warning);
+			}
 
 			EditorGUILayout.EndVertical();
 		}
