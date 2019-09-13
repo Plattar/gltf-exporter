@@ -142,13 +142,24 @@ namespace Plattar {
 
 			EditorGUILayout.LabelField("Mesh Options");
 
-			EditorGUILayout.HelpBox("Use to fix google scene-viewer hovering issues", MessageType.None);
+			bool hasAnim = SelectionHasAnimation(selectedObject);
+
+			if (!hasAnim) {
+				EditorGUILayout.HelpBox("Use to fix google scene-viewer hovering issues", MessageType.Info);
+			}
+			else {
+				EditorGUILayout.HelpBox("Pivot realignment is unavailable for animated objects", MessageType.Error);
+			}
+
+			EditorGUI.BeginDisabledGroup(hasAnim);
 
 			if (GUILayout.Button("Realign Pivot Center")) {
 				if (EditorUtility.DisplayDialog("Re-Align Mesh Pivots?", "Are you sure you want to re-align the pivot center? This operation will modify mesh data and cannot be reversed, continue?", "Yes", "Cancel")) {
 					CenterMesh(selectedObject);
 				}
 			}
+
+			EditorGUI.EndDisabledGroup();
 
 			EditorGUI.BeginDisabledGroup(!pivotCheck.Contains(selectedObject.GetInstanceID()));
 
@@ -280,6 +291,20 @@ namespace Plattar {
 			}
 
 			root.gameObject.transform.position = position;
+		}
+
+		private static bool SelectionHasAnimation(GameObject selectedObject) {
+			if (selectedObject == null) {
+				return false;
+			}
+
+			Animation[] filters = selectedObject.GetComponentsInChildren<Animation>();
+
+			if (filters == null || filters.Length == 0) {
+				return false;
+			}
+
+			return true;
 		}
 
 		/**
