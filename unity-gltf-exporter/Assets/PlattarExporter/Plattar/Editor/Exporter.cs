@@ -63,6 +63,13 @@ namespace Plattar {
 				}
 			}
 
+			if (GUILayout.Button("Reset Exporter Defaults")) {
+				GLTFTextureUtils.textureOption = GLTFTextureUtils.TextureExportOption.None;
+				GLTFTextureUtils.JPGQuality = 75;
+				GLTFUtils.boundsExportOption = GLTFUtils.BoundsExportOption.Default;
+				PlattarExporterOptions.ExportAnimations = true;
+			}
+
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.Separator();
 
@@ -117,9 +124,6 @@ namespace Plattar {
 
 				ShowTextureModifiersUI();
 				EditorGUILayout.Separator();
-
-				ShowMinMaxModifiersUI();
-				EditorGUILayout.Separator();
 				
 				EditorGUILayout.BeginVertical();
 
@@ -138,6 +142,8 @@ namespace Plattar {
 
 			EditorGUILayout.LabelField("Mesh Options");
 
+			EditorGUILayout.HelpBox("Use to fix google scene-viewer hovering issues", MessageType.None);
+
 			if (GUILayout.Button("Realign Pivot Center")) {
 				if (EditorUtility.DisplayDialog("Re-Align Mesh Pivots?", "Are you sure you want to re-align the pivot center? This operation will modify mesh data and cannot be reversed, continue?", "Yes", "Cancel")) {
 					CenterMesh(selectedObject);
@@ -153,6 +159,8 @@ namespace Plattar {
 
 			EditorGUI.EndDisabledGroup();
 
+			GLTFUtils.boundsExportOption = (GLTFUtils.BoundsExportOption)EditorGUILayout.EnumPopup("Bounding Box Calculation", GLTFUtils.boundsExportOption);
+
 			EditorGUILayout.EndVertical();
 		}
 
@@ -165,7 +173,7 @@ namespace Plattar {
 
 			EditorGUI.BeginDisabledGroup(GLTFTextureUtils.textureOption == GLTFTextureUtils.TextureExportOption.PNG);
 
-			GLTFTextureUtils.JPGQuality = EditorGUILayout.IntSlider("Texture Quality", GLTFTextureUtils.JPGQuality, 0, 100);
+			GLTFTextureUtils.JPGQuality = EditorGUILayout.IntSlider("JPG Texture Quality", GLTFTextureUtils.JPGQuality, 0, 100);
 
 			EditorGUI.EndDisabledGroup();
 
@@ -178,20 +186,6 @@ namespace Plattar {
 			EditorGUILayout.LabelField("Animation Options");
 
 			PlattarExporterOptions.ExportAnimations = EditorGUILayout.Toggle("Export Animations", PlattarExporterOptions.ExportAnimations);
-
-			EditorGUILayout.EndVertical();
-		}
-
-		private static void ShowMinMaxModifiersUI() {
-			EditorGUILayout.BeginVertical("HelpBox");
-
-			EditorGUILayout.LabelField("Bounds Options");
-
-			GLTFUtils.boundsExportOption = (GLTFUtils.BoundsExportOption)EditorGUILayout.EnumPopup("Export Min-Max", GLTFUtils.boundsExportOption);
-
-			if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.None) {
-				EditorGUILayout.HelpBox("GLTF Bounds will not be exported, this could break or impact rendering performance", MessageType.Warning);
-			}
 
 			EditorGUILayout.EndVertical();
 		}

@@ -8,16 +8,16 @@ using System;
 using UnityGLTF.Extensions;
 using System.Reflection;
 using CurveExtended;
+using System.ComponentModel;
 
 public class GLTFUtils
 {
 	public enum BoundsExportOption {
-		None = 0,
-		Local = 1,
-		World = 2
+		Default = 1,
+		SceneViewerFix = 2
 	}
 	
-	public static BoundsExportOption boundsExportOption = BoundsExportOption.Local;
+	public static BoundsExportOption boundsExportOption = BoundsExportOption.Default;
 	
 	public enum WorkflowMode
 	{

@@ -1402,7 +1402,7 @@ namespace UnityGLTF
 			accessor.Count = count;
 			accessor.Type = GLTFAccessorAttributeType.VEC3;
 
-			if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.Local) {
+			if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.Default) {
 				float minX = arr[0].x;
 				float minY = arr[0].y;
 				float minZ = arr[0].z;
@@ -1443,7 +1443,7 @@ namespace UnityGLTF
 				accessor.Min = new List<double> { minX, minY, minZ };
 				accessor.Max = new List<double> { maxX, maxY, maxZ };
 			}
-			else if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.World) {
+			else if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.SceneViewerFix) {
 				Bounds totalBounds = new Bounds();
 
 				for (var i = 0; i < count; i++) {
