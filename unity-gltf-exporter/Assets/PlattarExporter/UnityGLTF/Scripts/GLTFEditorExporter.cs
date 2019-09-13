@@ -1454,17 +1454,16 @@ namespace UnityGLTF
 				float pivotY = (totalBounds.min.y + totalBounds.max.y) / 2.0f;
 				float pivotZ = (totalBounds.min.z + totalBounds.max.z) / 2.0f;
 
-				Vector3 center = new Vector3(pivotX, pivotY, pivotZ);
-
 				float minX = totalBounds.min.x;
 				float minY = totalBounds.min.y;
 				float minZ = totalBounds.min.z;
+				
 				float maxX = totalBounds.max.x;
 				float maxY = totalBounds.max.y;
 				float maxZ = totalBounds.max.z;
 
-				accessor.Min = new List<double> {minX - center.x, minY - center.y, minZ - center.z};
-				accessor.Max = new List<double> {maxX - center.x, maxY - center.y, maxZ - center.z};
+				accessor.Min = new List<double> {minX - pivotX, minY - pivotY, minZ - pivotZ};
+				accessor.Max = new List<double> {maxX - pivotX, maxY - pivotY, maxZ - pivotZ};
 			}
 
 			var byteOffset = _bufferWriter.BaseStream.Position;
