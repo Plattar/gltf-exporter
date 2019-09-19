@@ -221,7 +221,8 @@ public class GLTFUtils
 	public static string buildImageName(Texture2D image)
 	{
 		string extension = GLTFTextureUtils.useJPGTexture(image) ? ".jpg": ".png";
-		return image.GetInstanceID().ToString().Replace("-", "") + "_" + image.name + extension;
+		//return image.GetInstanceID().ToString().Replace("-", "") + "_" + image.name + extension;
+		return image.name + extension;
 	}
 
 	public static bool getPixelsFromTexture(ref Texture2D texture, out Color[] pixels)
