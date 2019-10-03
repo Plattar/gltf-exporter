@@ -43,9 +43,9 @@ namespace UnityGLTF
 		public bool ExportNames = true;
 
 		public enum MaterialDoubleSidedExport {
-			DoubleSided,
-			SingleSided,
-			Default
+			Default,
+			FrontSide,
+			DoubleSide
 		}
 
 		public static MaterialDoubleSidedExport materialExportOption = MaterialDoubleSidedExport.Default;
@@ -623,10 +623,10 @@ namespace UnityGLTF
 					break;
 			}
 
-			if (materialExportOption == MaterialDoubleSidedExport.DoubleSided) {
+			if (materialExportOption == MaterialDoubleSidedExport.DoubleSide) {
 				material.DoubleSided = true;
 			}
-			else if (materialExportOption == MaterialDoubleSidedExport.SingleSided) {
+			else if (materialExportOption == MaterialDoubleSidedExport.FrontSide) {
 				material.DoubleSided = false;
 			}
 			else {
