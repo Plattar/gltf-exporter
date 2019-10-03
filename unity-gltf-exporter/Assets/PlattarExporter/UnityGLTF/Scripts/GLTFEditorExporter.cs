@@ -42,6 +42,14 @@ namespace UnityGLTF
 		private GLTFTextureUtilsCache _textureCache;
 		public bool ExportNames = true;
 
+		public enum MaterialDoubleSidedExport {
+			DoubleSided,
+			SingleSided,
+			Default
+		}
+
+		public static MaterialDoubleSidedExport materialExportOption = MaterialDoubleSidedExport.Default;
+
 		// Progress
 		public enum EXPORT_STEP
 		{
@@ -615,8 +623,16 @@ namespace UnityGLTF
 					break;
 			}
 
-			material.DoubleSided = materialObj.HasProperty("_Cull") &&
+			if (materialExportOption == MaterialDoubleSidedExport.DoubleSided) {
+				material.DoubleSided = true;
+			}
+			else if (materialExportOption == MaterialDoubleSidedExport.SingleSided) {
+				material.DoubleSided = false;
+			}
+			else {
+				material.DoubleSided = materialObj.HasProperty("_Cull") &&
 				materialObj.GetInt("_Cull") == (float)UnityEngine.Rendering.CullMode.Off;
+			}
 
 			if (materialObj.IsKeywordEnabled("_EMISSION") && materialObj.HasProperty("_EmissionColor"))
 			{

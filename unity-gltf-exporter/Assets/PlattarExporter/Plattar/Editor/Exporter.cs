@@ -186,6 +186,8 @@ namespace Plattar {
 
 			GLTFTextureUtils.JPGQuality = EditorGUILayout.IntSlider("JPG Texture Quality", GLTFTextureUtils.JPGQuality, 0, 100);
 
+			GLTFEditorExporter.materialExportOption = (GLTFEditorExporter.MaterialDoubleSidedExport)EditorGUILayout.EnumPopup("Material Export Type", GLTFEditorExporter.materialExportOption);
+
 			EditorGUI.EndDisabledGroup();
 
 			EditorGUILayout.EndVertical();
