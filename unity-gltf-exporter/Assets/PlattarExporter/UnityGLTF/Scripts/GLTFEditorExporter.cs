@@ -637,6 +637,9 @@ namespace UnityGLTF
 			if (materialObj.IsKeywordEnabled("_EMISSION") && materialObj.HasProperty("_EmissionColor"))
 			{
 				material.EmissiveFactor = materialObj.GetColor("_EmissionColor").ToNumericsColor();
+				material.EmissiveFactor.R = Math.Min(1.0f, material.EmissiveFactor.R);
+				material.EmissiveFactor.G = Math.Min(1.0f, material.EmissiveFactor.G);
+				material.EmissiveFactor.B = Math.Min(1.0f, material.EmissiveFactor.B);
 			}
 
 			if (materialObj.HasProperty("_EmissionMap"))
