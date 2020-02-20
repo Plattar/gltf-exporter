@@ -1370,6 +1370,12 @@ namespace UnityGLTF
 				}
 			}
 
+			if(switchHandedness){
+				var temp = minZ;
+				minZ = -maxZ;
+				maxZ = -temp;
+			}
+
 			accessor.Min = new List<double> { minX, minY, minZ };
 			accessor.Max = new List<double> { maxX, maxY, maxZ };
 
@@ -1454,6 +1460,12 @@ namespace UnityGLTF
 					{
 						maxZ = cur.z;
 					}
+				}
+
+				if(switchHandedness){
+					var temp = minZ;
+					minZ = -maxZ;
+					maxZ = -temp;
 				}
 
 				accessor.Min = new List<double> { minX, minY, minZ };
@@ -1574,6 +1586,14 @@ namespace UnityGLTF
 				}
 			}
 
+			var temp = minW;
+			minW = -maxW;
+			maxW = -temp;
+
+			temp = minZ;
+			minZ = -maxZ;
+			maxZ = -temp;
+
 			accessor.Min = new List<double> { minX, minY, minZ, minW };
 			accessor.Max = new List<double> { maxX, maxY, maxZ, maxW };
 
@@ -1660,6 +1680,16 @@ namespace UnityGLTF
 				{
 					maxW = cur.w;
 				}
+			}
+
+			if(switchHandedness){
+				var temp = minW;
+				minW = -maxW;
+				maxW = -temp;
+
+				temp = minZ;
+				minZ = -maxZ;
+				maxZ = -temp;
 			}
 
 			accessor.Min = new List<double> { minX, minY, minZ, minW };
