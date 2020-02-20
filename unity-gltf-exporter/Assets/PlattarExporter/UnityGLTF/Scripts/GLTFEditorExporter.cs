@@ -1493,6 +1493,12 @@ namespace UnityGLTF
 				float maxY = totalBounds.max.y;
 				float maxZ = totalBounds.max.z;
 
+				if(switchHandedness){
+					var temp = minZ;
+					minZ = -maxZ;
+					maxZ = -temp;
+				}
+
 				accessor.Min = new List<double> {minX - pivotX, minY - pivotY, minZ - pivotZ};
 				accessor.Max = new List<double> {maxX - pivotX, maxY - pivotY, maxZ - pivotZ};
 			}
