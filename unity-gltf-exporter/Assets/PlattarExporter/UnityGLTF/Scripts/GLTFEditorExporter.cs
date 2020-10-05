@@ -236,7 +236,12 @@ namespace UnityGLTF
 				//Should filter regarding channel that use it
 				string outputPath = Path.Combine(path, GLTFUtils.buildImageName(image)); // Png by default, but will be changed in write function
 				string finalOutputPath = GLTFTextureUtils.writeTextureOnDisk(_textureCache.flipTexture(image), outputPath, true);
-				_exportedFiles.Add(finalOutputPath, "");
+				try {
+					_exportedFiles.Add(finalOutputPath, "");
+				}
+				catch (Exception e) {
+					throw new Exception("The File " + outputPath + " has alredy been used. Ensure your file names are unique.");
+				}
 
 				updateProgress(EXPORT_STEP.IMAGES, _images.IndexOf(image), _images.Count);
 			}
