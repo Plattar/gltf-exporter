@@ -376,7 +376,8 @@ namespace UnityGLTF
 			{
 				_animatedNodes.Add(nodeTransform);
 			}
-			if(nodeTransform.GetComponent<SkinnedMeshRenderer>())
+			SkinnedMeshRenderer skinnedMeshRenderer = nodeTransform.GetComponent<SkinnedMeshRenderer>();
+			if (skinnedMeshRenderer && skinnedMeshRenderer.enabled)
 			{
 				_skinnedNodes.Add(nodeTransform);
 			}
@@ -399,7 +400,8 @@ namespace UnityGLTF
 			// children that are primitives get put in a mesh
 			GameObject[] primitives, nonPrimitives;
 			FilterPrimitives(nodeTransform, out primitives, out nonPrimitives);
-			if (primitives.Length > 0 && nodeTransform.GetComponent<UnityEngine.MeshRenderer>())
+			MeshRenderer meshRenderer = nodeTransform.GetComponent<MeshRenderer>();
+			if (primitives.Length > 0 && meshRenderer && meshRenderer.enabled)
 			{
 				node.Mesh = ExportMesh(nodeTransform.name, primitives);
 
