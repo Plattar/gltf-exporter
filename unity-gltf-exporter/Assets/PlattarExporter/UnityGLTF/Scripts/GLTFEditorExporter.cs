@@ -406,8 +406,8 @@ namespace UnityGLTF
 			// children that are primitives get put in a mesh
 			GameObject[] primitives, nonPrimitives;
 			FilterPrimitives(nodeTransform, out primitives, out nonPrimitives);
-			MeshRenderer meshRenderer = nodeTransform.GetComponent<MeshRenderer>();
-			if (primitives.Length > 0 && meshRenderer && meshRenderer.enabled)
+			Renderer renderer = nodeTransform.GetComponent<Renderer>();
+			if (primitives.Length > 0 && renderer && renderer.enabled)
 			{
 				node.Mesh = ExportMesh(nodeTransform.name, primitives);
 
