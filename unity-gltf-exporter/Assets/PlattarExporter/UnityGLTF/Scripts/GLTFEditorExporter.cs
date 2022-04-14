@@ -527,7 +527,7 @@ namespace UnityGLTF
 				for (var i = 0; i < primVariations.Length; i++)
 				{
 					prims[i] = primVariations[i].Clone();
-					if(materialsObj[i])
+					if(materialsObj != null && materialsObj[i])
 						prims[i].Material = ExportMaterial(materialsObj[i]);
 				}
 
@@ -577,7 +577,7 @@ namespace UnityGLTF
 				if (aColor0 != null)
 					primitive.Attributes.Add(SemanticProperties.Color(0), aColor0);
 
-				if (submesh < materialsObj.Length && materialsObj[submesh])
+				if (materialsObj != null && submesh < materialsObj.Length && materialsObj[submesh])
 				{
 					primitive.Material = ExportMaterial(materialsObj[submesh]);
 					lastMaterialId = primitive.Material;
