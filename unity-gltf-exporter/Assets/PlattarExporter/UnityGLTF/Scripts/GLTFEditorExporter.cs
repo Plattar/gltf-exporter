@@ -42,7 +42,8 @@ namespace UnityGLTF
 		private GLTFTextureUtilsCache _textureCache;
 		public bool ExportNames = true;
 
-		public enum MaterialDoubleSidedExport {
+		public enum MaterialDoubleSidedExport
+		{
 			Default,
 			FrontSide,
 			DoubleSide
@@ -78,7 +79,7 @@ namespace UnityGLTF
 
 		private void updateProgress(EXPORT_STEP step, float current, float total)
 		{
-			if(_progressCallback != null)
+			if (_progressCallback != null)
 			{
 				_progressCallback(step, current, total);
 			}
@@ -172,7 +173,8 @@ namespace UnityGLTF
 		/// Gets the root object of the exported GLTF
 		/// </summary>
 		/// <returns>Root parsed GLTF Json</returns>
-		public GLTFRoot GetRoot() {
+		public GLTFRoot GetRoot()
+		{
 			return _root;
 		}
 
@@ -207,7 +209,7 @@ namespace UnityGLTF
 					Transform t = _skinnedNodes[i];
 					exportSkinFromNode(t);
 
-					updateProgress(EXPORT_STEP.SKINNING, i,  _skinnedNodes.Count);
+					updateProgress(EXPORT_STEP.SKINNING, i, _skinnedNodes.Count);
 				}
 			}
 
@@ -236,10 +238,12 @@ namespace UnityGLTF
 				//Should filter regarding channel that use it
 				string outputPath = Path.Combine(path, GLTFUtils.buildImageName(image)); // Png by default, but will be changed in write function
 				string finalOutputPath = GLTFTextureUtils.writeTextureOnDisk(_textureCache.flipTexture(image), outputPath, true);
-				try {
+				try
+				{
 					_exportedFiles.Add(finalOutputPath, "");
 				}
-				catch (Exception e) {
+				catch (Exception e)
+				{
 					throw new Exception("The File " + outputPath + " has alredy been used. Ensure your file names are unique.");
 				}
 
@@ -262,7 +266,7 @@ namespace UnityGLTF
 
 		private UnityEngine.Mesh getMesh(GameObject gameObject)
 		{
-			if(gameObject.GetComponent<MeshFilter>())
+			if (gameObject.GetComponent<MeshFilter>())
 			{
 				return gameObject.GetComponent<MeshFilter>().sharedMesh;
 			}
@@ -270,9 +274,9 @@ namespace UnityGLTF
 			SkinnedMeshRenderer skinMesh = gameObject.GetComponent<SkinnedMeshRenderer>();
 			if (skinMesh)
 			{
-				if(!_exportAnimation && _bakeSkinnedMeshes)
+				if (!_exportAnimation && _bakeSkinnedMeshes)
 				{
-					if(!_bakedMeshes.ContainsKey(skinMesh))
+					if (!_bakedMeshes.ContainsKey(skinMesh))
 					{
 						UnityEngine.Mesh bakedMesh = new UnityEngine.Mesh();
 						skinMesh.BakeMesh(bakedMesh);
@@ -358,7 +362,8 @@ namespace UnityGLTF
 
 			_root.Scenes.Add(scene);
 
-			return new SceneId {
+			return new SceneId
+			{
 				Id = _root.Scenes.Count - 1,
 				Root = _root
 			};
@@ -372,7 +377,7 @@ namespace UnityGLTF
 			{
 				node.Name = nodeTransform.name;
 			}
-			if(nodeTransform.GetComponent<UnityEngine.Animation>() || nodeTransform.GetComponent<UnityEngine.Animator>())
+			if (nodeTransform.GetComponent<UnityEngine.Animation>() || nodeTransform.GetComponent<UnityEngine.Animator>())
 			{
 				_animatedNodes.Add(nodeTransform);
 			}
@@ -385,7 +390,8 @@ namespace UnityGLTF
 			bool useLocal = !Array.Exists(_rootTransforms, element => element == nodeTransform);
 			node.SetUnityTransform(nodeTransform, useLocal);
 
-			var id = new NodeId {
+			var id = new NodeId
+			{
 				Id = _root.Nodes.Count,
 				Root = _root
 			};
@@ -416,7 +422,7 @@ namespace UnityGLTF
 			if (nonPrimitives.Length > 0)
 			{
 				node.Children = new List<NodeId>(nonPrimitives.Length);
-				foreach(var child in nonPrimitives)
+				foreach (var child in nonPrimitives)
 				{
 					node.Children.Add(ExportNode(child.transform, nodeCount));
 				}
@@ -428,7 +434,7 @@ namespace UnityGLTF
 		private void FilterPrimitives(Transform transform, out GameObject[] primitives, out GameObject[] nonPrimitives)
 		{
 			var childCount = transform.childCount;
-			var prims = new List<GameObject>(childCount+1);
+			var prims = new List<GameObject>(childCount + 1);
 			var nonPrims = new List<GameObject>(childCount);
 
 			// add another primitive if the root object also has a mesh
@@ -440,7 +446,7 @@ namespace UnityGLTF
 			for (var i = 0; i < childCount; i++)
 			{
 				var go = transform.GetChild(i).gameObject;
-					nonPrims.Add(go);
+				nonPrims.Add(go);
 			}
 
 			primitives = prims.ToArray();
@@ -485,7 +491,7 @@ namespace UnityGLTF
 			}
 
 			// if so, return that mesh id
-			if(existingMeshId != null)
+			if (existingMeshId != null)
 				return existingMeshId;
 
 			// if not, create new mesh and return its id
@@ -529,7 +535,7 @@ namespace UnityGLTF
 				for (var i = 0; i < primVariations.Length; i++)
 				{
 					prims[i] = primVariations[i].Clone();
-					if(materialsObj != null && materialsObj[i])
+					if (materialsObj != null && materialsObj[i])
 						prims[i].Material = ExportMaterial(materialsObj[i]);
 				}
 
@@ -538,7 +544,7 @@ namespace UnityGLTF
 
 			AccessorId aPosition = null, aNormal = null, aTangent = null,
 				aTexcoord0 = null, aTexcoord1 = null, aColor0 = null;
-			
+
 			aPosition = ExportVerticesAccessor(meshObj.vertices, gameObject, true);
 
 			if (meshObj.normals.Length != 0)
@@ -630,13 +636,16 @@ namespace UnityGLTF
 					break;
 			}
 
-			if (materialExportOption == MaterialDoubleSidedExport.DoubleSide) {
+			if (materialExportOption == MaterialDoubleSidedExport.DoubleSide)
+			{
 				material.DoubleSided = true;
 			}
-			else if (materialExportOption == MaterialDoubleSidedExport.FrontSide) {
+			else if (materialExportOption == MaterialDoubleSidedExport.FrontSide)
+			{
 				material.DoubleSided = false;
 			}
-			else {
+			else
+			{
 				material.DoubleSided = materialObj.HasProperty("_Cull") &&
 				materialObj.GetInt("_Cull") == (float)UnityEngine.Rendering.CullMode.Off;
 			}
@@ -724,7 +733,8 @@ namespace UnityGLTF
 
 			_materials.Add(materialObj);
 
-			id = new MaterialId {
+			id = new MaterialId
+			{
 				Id = _root.Materials.Count,
 				Root = _root
 			};
@@ -761,14 +771,14 @@ namespace UnityGLTF
 			);
 		}
 
-		private void registerExtension(string extension, bool isRequired=false)
+		private void registerExtension(string extension, bool isRequired = false)
 		{
-			if(!_root.ExtensionsUsed.Contains(extension))
+			if (!_root.ExtensionsUsed.Contains(extension))
 			{
 				_root.ExtensionsUsed.Add(extension);
 			}
 
-			if(isRequired && !_root.ExtensionsRequired.Contains(extension))
+			if (isRequired && !_root.ExtensionsRequired.Contains(extension))
 			{
 				_root.ExtensionsRequired.Add(extension);
 			}
@@ -785,7 +795,7 @@ namespace UnityGLTF
 			if (mat.GetTexture("_SpecGlossMap"))
 			{
 				specularGlossinessTexture = ExportTextureInfo(mat.GetTexture("_SpecGlossMap"));
-				if(mat.HasProperty("_GlossMapScale"))
+				if (mat.HasProperty("_GlossMapScale"))
 					glossinessFactor = mat.GetFloat("_GlossMapScale");
 			}
 			else
@@ -867,7 +877,8 @@ namespace UnityGLTF
 
 				if (mrTex != null)
 				{
-					if (material.HasProperty("_GlossMapScale")) {
+					if (material.HasProperty("_GlossMapScale"))
+					{
 						pbr.RoughnessFactor = material.GetFloat("_GlossMapScale");
 					}
 
@@ -883,7 +894,8 @@ namespace UnityGLTF
 
 				if (mgTex != null)
 				{
-					if (material.HasProperty("_GlossMapScale")) {
+					if (material.HasProperty("_GlossMapScale"))
+					{
 						pbr.RoughnessFactor = material.GetFloat("_GlossMapScale");
 					}
 
@@ -903,7 +915,7 @@ namespace UnityGLTF
 			{
 				_root.ExtensionsUsed = new List<string>(new string[] { "KHR_materials_common" });
 			}
-			else if(!_root.ExtensionsUsed.Contains("KHR_materials_common"))
+			else if (!_root.ExtensionsUsed.Contains("KHR_materials_common"))
 				_root.ExtensionsUsed.Add("KHR_materials_common");
 
 			var constant = new MaterialCommonConstant();
@@ -968,7 +980,8 @@ namespace UnityGLTF
 
 			_textures.Add(textureObj);
 
-			id = new TextureId {
+			id = new TextureId
+			{
 				Id = _root.Textures.Count,
 				Root = _root
 			};
@@ -982,7 +995,7 @@ namespace UnityGLTF
 		{
 			string imagePath = GLTFUtils.buildImageName((Texture2D)texture);
 			ImageId id = GetImageId(_root, texture);
-			if(id != null)
+			if (id != null)
 			{
 				return id;
 			}
@@ -998,7 +1011,8 @@ namespace UnityGLTF
 
 			image.Uri = imagePath;
 
-			id = new ImageId {
+			id = new ImageId
+			{
 				Id = _root.Images.Count,
 				Root = _root
 			};
@@ -1027,12 +1041,12 @@ namespace UnityGLTF
 				sampler.WrapT = GLTF.Schema.WrapMode.Repeat;
 			}
 
-			if(texture.filterMode == FilterMode.Point)
+			if (texture.filterMode == FilterMode.Point)
 			{
 				sampler.MinFilter = MinFilterMode.NearestMipmapNearest;
 				sampler.MagFilter = MagFilterMode.Nearest;
 			}
-			else if(texture.filterMode == FilterMode.Bilinear)
+			else if (texture.filterMode == FilterMode.Bilinear)
 			{
 				sampler.MinFilter = MinFilterMode.Linear;
 				sampler.MagFilter = MagFilterMode.Linear;
@@ -1057,7 +1071,7 @@ namespace UnityGLTF
 		private Vector2[] FlipY(Vector2[] arr)
 		{
 			var len = arr.Length;
-			for(var i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
 				arr[i].y = 1 - arr[i].y;
 			}
@@ -1067,7 +1081,7 @@ namespace UnityGLTF
 		private Vector3[] InvertZ(Vector3[] arr)
 		{
 			var len = arr.Length;
-			for(var i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
 				arr[i].z = -arr[i].z;
 			}
@@ -1077,7 +1091,7 @@ namespace UnityGLTF
 		private Vector4[] InvertW(Vector4[] arr)
 		{
 			var len = arr.Length;
-			for(var i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
 				arr[i].w = -arr[i].w;
 			}
@@ -1198,7 +1212,8 @@ namespace UnityGLTF
 
 			accessor.BufferView = ExportBufferView((int)byteOffset, (int)byteLength);
 
-			var id = new AccessorId {
+			var id = new AccessorId
+			{
 				Id = _root.Accessors.Count,
 				Root = _root
 			};
@@ -1309,7 +1324,8 @@ namespace UnityGLTF
 
 			var byteOffset = _bufferWriter.BaseStream.Position;
 
-			foreach (var vec in arr) {
+			foreach (var vec in arr)
+			{
 				_bufferWriter.Write(vec.x);
 				_bufferWriter.Write(vec.y);
 			}
@@ -1318,7 +1334,8 @@ namespace UnityGLTF
 
 			accessor.BufferView = ExportBufferView((int)byteOffset, (int)byteLength);
 
-			var id = new AccessorId {
+			var id = new AccessorId
+			{
 				Id = _root.Accessors.Count,
 				Root = _root
 			};
@@ -1327,7 +1344,7 @@ namespace UnityGLTF
 			return id;
 		}
 
-		private AccessorId ExportAccessor(Vector3[] arr, bool switchHandedness=false)
+		private AccessorId ExportAccessor(Vector3[] arr, bool switchHandedness = false)
 		{
 			var count = arr.Length;
 
@@ -1383,8 +1400,9 @@ namespace UnityGLTF
 
 			var byteOffset = _bufferWriter.BaseStream.Position;
 
-			foreach (var vec in arr) {
-				if(switchHandedness)
+			foreach (var vec in arr)
+			{
+				if (switchHandedness)
 				{
 					Vector3 vect = vec.switchHandedness();
 					_bufferWriter.Write(vect.x);
@@ -1403,7 +1421,8 @@ namespace UnityGLTF
 
 			accessor.BufferView = ExportBufferView((int)byteOffset, (int)byteLength);
 
-			var id = new AccessorId {
+			var id = new AccessorId
+			{
 				Id = _root.Accessors.Count,
 				Root = _root
 			};
@@ -1412,7 +1431,7 @@ namespace UnityGLTF
 			return id;
 		}
 
-		private AccessorId ExportVerticesAccessor(Vector3[] arr, GameObject parent, bool switchHandedness=false)
+		private AccessorId ExportVerticesAccessor(Vector3[] arr, GameObject parent, bool switchHandedness = false)
 		{
 			var count = arr.Length;
 
@@ -1426,7 +1445,8 @@ namespace UnityGLTF
 			accessor.Count = count;
 			accessor.Type = GLTFAccessorAttributeType.VEC3;
 
-			if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.Default) {
+			if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.Default)
+			{
 				float minX = arr[0].x;
 				float minY = arr[0].y;
 				float minZ = arr[0].z;
@@ -1467,10 +1487,12 @@ namespace UnityGLTF
 				accessor.Min = new List<double> { minX, minY, minZ };
 				accessor.Max = new List<double> { maxX, maxY, maxZ };
 			}
-			else if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.SceneViewerFix) {
+			else if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.SceneViewerFix)
+			{
 				Bounds totalBounds = new Bounds();
 
-				for (var i = 0; i < count; i++) {
+				for (var i = 0; i < count; i++)
+				{
 					totalBounds.Encapsulate(arr[i]);
 				}
 
@@ -1481,19 +1503,20 @@ namespace UnityGLTF
 				float minX = totalBounds.min.x;
 				float minY = totalBounds.min.y;
 				float minZ = totalBounds.min.z;
-				
+
 				float maxX = totalBounds.max.x;
 				float maxY = totalBounds.max.y;
 				float maxZ = totalBounds.max.z;
 
-				accessor.Min = new List<double> {minX - pivotX, minY - pivotY, minZ - pivotZ};
-				accessor.Max = new List<double> {maxX - pivotX, maxY - pivotY, maxZ - pivotZ};
+				accessor.Min = new List<double> { minX - pivotX, minY - pivotY, minZ - pivotZ };
+				accessor.Max = new List<double> { maxX - pivotX, maxY - pivotY, maxZ - pivotZ };
 			}
 
 			var byteOffset = _bufferWriter.BaseStream.Position;
 
-			foreach (var vec in arr) {
-				if(switchHandedness)
+			foreach (var vec in arr)
+			{
+				if (switchHandedness)
 				{
 					Vector3 vect = vec.switchHandedness();
 					_bufferWriter.Write(vect.x);
@@ -1512,7 +1535,8 @@ namespace UnityGLTF
 
 			accessor.BufferView = ExportBufferView((int)byteOffset, (int)byteLength);
 
-			var id = new AccessorId {
+			var id = new AccessorId
+			{
 				Id = _root.Accessors.Count,
 				Root = _root
 			};
@@ -1609,7 +1633,7 @@ namespace UnityGLTF
 			return id;
 		}
 
-		private AccessorId ExportAccessor(Vector4[] arr, bool switchHandedness=false)
+		private AccessorId ExportAccessor(Vector4[] arr, bool switchHandedness = false)
 		{
 			var count = arr.Length;
 
@@ -1675,7 +1699,8 @@ namespace UnityGLTF
 
 			var byteOffset = _bufferWriter.BaseStream.Position;
 
-			foreach (var vec in arr) {
+			foreach (var vec in arr)
+			{
 				Vector4 vect = switchHandedness ? vec.switchHandedness() : vec;
 				_bufferWriter.Write(vect.x);
 				_bufferWriter.Write(vect.y);
@@ -1687,7 +1712,8 @@ namespace UnityGLTF
 
 			accessor.BufferView = ExportBufferView((int)byteOffset, (int)byteLength);
 
-			var id = new AccessorId {
+			var id = new AccessorId
+			{
 				Id = _root.Accessors.Count,
 				Root = _root
 			};
@@ -1762,7 +1788,8 @@ namespace UnityGLTF
 
 			var byteOffset = _bufferWriter.BaseStream.Position;
 
-			foreach (var color in arr) {
+			foreach (var color in arr)
+			{
 				_bufferWriter.Write(color.r);
 				_bufferWriter.Write(color.g);
 				_bufferWriter.Write(color.b);
@@ -1773,7 +1800,8 @@ namespace UnityGLTF
 
 			accessor.BufferView = ExportBufferView((int)byteOffset, (int)byteLength);
 
-			var id = new AccessorId {
+			var id = new AccessorId
+			{
 				Id = _root.Accessors.Count,
 				Root = _root
 			};
@@ -1829,13 +1857,15 @@ namespace UnityGLTF
 
 		private BufferViewId ExportBufferView(int byteOffset, int byteLength)
 		{
-			var bufferView = new BufferView {
+			var bufferView = new BufferView
+			{
 				Buffer = _bufferId,
 				ByteOffset = byteOffset,
 				ByteLength = byteLength,
 			};
 
-			var id = new BufferViewId {
+			var id = new BufferViewId
+			{
 				Id = _root.BufferViews.Count,
 				Root = _root
 			};
@@ -1959,34 +1989,40 @@ namespace UnityGLTF
 		{
 			Animator a = transform.GetComponent<Animator>();
 
-			if (a != null) {
+			if (a != null)
+			{
 				AnimationClip[] clips = AnimationUtility.GetAnimationClips(transform.gameObject);
 
-				for (int i = 0; i < clips.Length; i++) {
+				for (int i = 0; i < clips.Length; i++)
+				{
 					GLTF.Schema.Animation anim = new GLTF.Schema.Animation();
 					anim.Name = GLTFEditorExporter.cleanNonAlphanumeric(a.name);
 					convertClipToGLTFAnimation(ref clips[i], ref transform, ref anim);
 
-					if (anim.Channels.Count > 0 && anim.Samplers.Count > 0) {
+					if (anim.Channels.Count > 0 && anim.Samplers.Count > 0)
+					{
 						_root.Animations.Add(anim);
 					}
 				}
 			}
 
 			UnityEngine.Animation animation = transform.GetComponent<UnityEngine.Animation>();
-			if (animation != null) {
-				foreach (AnimationState state in animation) {
+			if (animation != null)
+			{
+				foreach (AnimationState state in animation)
+				{
 					AnimationClip clip = state.clip;
 
 					GLTF.Schema.Animation anim = new GLTF.Schema.Animation();
 					anim.Name = GLTFEditorExporter.cleanNonAlphanumeric(state.name);
 					convertClipToGLTFAnimation(ref clip, ref transform, ref anim);
 
-					if (anim.Channels.Count > 0 && anim.Samplers.Count > 0) {
+					if (anim.Channels.Count > 0 && anim.Samplers.Count > 0)
+					{
 						_root.Animations.Add(anim);
 					}
 				}
-        	}
+			}
 		}
 
 		private int getTargetIdFromTransform(ref Transform transform)
@@ -2272,7 +2308,7 @@ namespace UnityGLTF
 			key.Mesh = mesh;
 			key.Material = getMaterial(transform.gameObject);
 			MeshId val;
-			if(!_primOwner.TryGetValue(key, out val))
+			if (!_primOwner.TryGetValue(key, out val))
 			{
 				Debug.Log("No mesh found for skin");
 				return;
@@ -2296,9 +2332,9 @@ namespace UnityGLTF
 			Vector4[] weights = boneWeightToWeightVec4(mesh.boneWeights);
 
 			GLTF.Schema.Mesh gltfMesh = _root.Meshes[val.Id];
-			foreach(MeshPrimitive prim in gltfMesh.Primitives)
+			foreach (MeshPrimitive prim in gltfMesh.Primitives)
 			{
-				if(!prim.Attributes.ContainsKey("JOINTS_0"))
+				if (!prim.Attributes.ContainsKey("JOINTS_0"))
 					prim.Attributes.Add("JOINTS_0", ExportAccessorUint(bones));
 				if (!prim.Attributes.ContainsKey("WEIGHTS_0"))
 					prim.Attributes.Add("WEIGHTS_0", ExportAccessor(weights));
