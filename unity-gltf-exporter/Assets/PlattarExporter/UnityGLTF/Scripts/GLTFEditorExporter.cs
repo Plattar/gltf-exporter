@@ -399,7 +399,7 @@ namespace UnityGLTF
 			// children that are primitives get put in a mesh
 			GameObject[] primitives, nonPrimitives;
 			FilterPrimitives(nodeTransform, out primitives, out nonPrimitives);
-			if (primitives.Length > 0)
+			if (primitives.Length > 0 && nodeTransform.GetComponent<UnityEngine.MeshRenderer>())
 			{
 				node.Mesh = ExportMesh(nodeTransform.name, primitives);
 
