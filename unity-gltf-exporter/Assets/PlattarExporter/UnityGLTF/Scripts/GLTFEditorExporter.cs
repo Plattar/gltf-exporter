@@ -670,6 +670,26 @@ namespace UnityGLTF
 
 			switch (materialObj.shader.name)
 			{
+				case "Standard (Specular setup)":
+					KHR_materials_pbrSpecularGlossinessExtension pbr = convertSpecular(materialObj);
+					material.Extensions.Add(KHR_materials_pbrSpecularGlossinessExtensionFactory.EXTENSION_NAME, pbr);
+					registerExtension(KHR_materials_pbrSpecularGlossinessExtensionFactory.EXTENSION_NAME);
+
+					if (materialObj.HasProperty("_OcclusionMap"))
+					{
+						var occTex = materialObj.GetTexture("_OcclusionMap");
+						if (occTex != null)
+						{
+							material.OcclusionTexture = ExportOcclusionTextureInfo(occTex, materialObj);
+							ExportTextureTransform(material.OcclusionTexture, materialObj, "_OcclusionMap");
+						}
+					}
+
+					break;
+				case "GLTF/GLTFConstant":
+					material.CommonConstant = ExportCommonConstant(materialObj);
+					break;
+				default:
 				case "Standard":
 				case "Standard (Roughness setup)":
 				case "GLTF/GLTFStandard":
@@ -697,25 +717,6 @@ namespace UnityGLTF
 						}
 					}
 
-					break;
-				case "Standard (Specular setup)":
-					KHR_materials_pbrSpecularGlossinessExtension pbr = convertSpecular(materialObj);
-					material.Extensions.Add(KHR_materials_pbrSpecularGlossinessExtensionFactory.EXTENSION_NAME, pbr);
-					registerExtension(KHR_materials_pbrSpecularGlossinessExtensionFactory.EXTENSION_NAME);
-
-					if (materialObj.HasProperty("_OcclusionMap"))
-					{
-						var occTex = materialObj.GetTexture("_OcclusionMap");
-						if (occTex != null)
-						{
-							material.OcclusionTexture = ExportOcclusionTextureInfo(occTex, materialObj);
-							ExportTextureTransform(material.OcclusionTexture, materialObj, "_OcclusionMap");
-						}
-					}
-
-					break;
-				case "GLTF/GLTFConstant":
-					material.CommonConstant = ExportCommonConstant(materialObj);
 					break;
 			}
 
