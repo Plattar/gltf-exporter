@@ -1099,7 +1099,7 @@ namespace UnityGLTF
 
 			if (count == 0)
 			{
-				throw new Exception("Accessors can not have a count of 0.");
+				throw new Exception("Accessors - int[] can not have a count of 0.");
 			}
 
 			var accessor = new Accessor();
@@ -1210,7 +1210,7 @@ namespace UnityGLTF
 
 			if (count == 0)
 			{
-				throw new Exception("Accessors can not have a count of 0.");
+				throw new Exception("Accessors - float[] can not have a count of 0.");
 			}
 
 			var accessor = new Accessor();
@@ -1266,7 +1266,7 @@ namespace UnityGLTF
 
 			if (count == 0)
 			{
-				throw new Exception("Accessors can not have a count of 0.");
+				throw new Exception("Accessors - Vector2[] can not have a count of 0.");
 			}
 
 			var accessor = new Accessor();
@@ -1330,7 +1330,7 @@ namespace UnityGLTF
 
 			if (count == 0)
 			{
-				throw new Exception("Accessors can not have a count of 0.");
+				throw new Exception("Accessors - Vector3[] can not have a count of 0.");
 			}
 
 			var accessor = new Accessor();
@@ -1524,7 +1524,7 @@ namespace UnityGLTF
 
 			if (count == 0)
 			{
-				throw new Exception("Accessors can not have a count of 0.");
+				throw new Exception("Accessors - Vector4[] can not have a count of 0.");
 			}
 
 			var accessor = new Accessor();
@@ -1612,7 +1612,7 @@ namespace UnityGLTF
 
 			if (count == 0)
 			{
-				throw new Exception("Accessors can not have a count of 0.");
+				throw new Exception("Accessors - Vector4[] can not have a count of 0.");
 			}
 
 			var accessor = new Accessor();
@@ -1699,7 +1699,7 @@ namespace UnityGLTF
 
 			if (count == 0)
 			{
-				throw new Exception("Accessors can not have a count of 0.");
+				throw new Exception("Accessors - Color[] can not have a count of 0.");
 			}
 
 			var accessor = new Accessor();
@@ -1785,7 +1785,7 @@ namespace UnityGLTF
 
 			if (count == 0)
 			{
-				throw new Exception("Accessors can not have a count of 0.");
+				throw new Exception("Accessors - Matrix4x4[] can not have a count of 0.");
 			}
 
 			var accessor = new Accessor();
