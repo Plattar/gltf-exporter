@@ -2271,20 +2271,111 @@ namespace UnityGLTF
 			MeshId val;
 			if(!_primOwner.TryGetValue(key, out val))
 			{
-				Debug.Log("No mesh found for skin");
+				Debug.Log("exportSkinFromNode() > No mesh found for skin " + transform.name);
 				return;
 			}
 			SkinnedMeshRenderer skin = transform.GetComponent<SkinnedMeshRenderer>();
 			GLTF.Schema.Skin gltfSkin = new Skin();
 
-			for (int i = 0; i < skin.bones.Length; ++i)
+			if (skin.bones.Length > 0)
 			{
-				gltfSkin.Joints.Add(
-					new NodeId
+				for (int i = 0; i < skin.bones.Length; ++i)
+				{
+					gltfSkin.Joints.Add(
+						new NodeId
+						{
+							Id = _exportedTransforms[skin.bones[i].GetInstanceID()],
+							Root = _root
+						});
+				}
+			}
+			else
+			{
+				// Probably "Optimize game objects" was used on import. Restore skin info from source data.
+				Animator animator = transform.GetComponentInParent<Animator>();
+				if(!animator || !animator.avatar)
+				{
+					Debug.Log("exportSkinFromNode() > Can't find animator or avatar to restore optimized bones for skin " + transform.name);
+					return;
+				}
+
+				SerializedObject serializedAvatar = new SerializedObject(animator.avatar);
+				var propBoneMap = serializedAvatar.FindProperty("m_TOS");
+
+				// Find a model root from avatar data
+				// FIXME: how unity actually finds a root node for an avatar? It probably bakes everything to m_AvatarSkeletonPose etc.
+				Transform searchRoot = null;
+				for (int j = 0; j < propBoneMap.arraySize; j++)
+				{
+					var pair = propBoneMap.GetArrayElementAtIndex(j);
+					var avatarBoneHash = (uint)pair.FindPropertyRelative("first").intValue;
+					var avatarBonePath = pair.FindPropertyRelative("second").stringValue;
+					if (!string.IsNullOrEmpty(avatarBonePath))
 					{
-						Id = _exportedTransforms[skin.bones[i].GetInstanceID()],
-						Root = _root
-					});
+						var currRoot = animator.gameObject.transform;
+						while (currRoot)
+						{
+							var bone = currRoot.Find(avatarBonePath);
+							if (bone)
+							{
+								searchRoot = currRoot;
+								break;
+							}
+							else
+							{
+								currRoot = currRoot.parent;
+							}
+						}
+						
+						if (searchRoot)
+						{
+							break;
+						}
+					}
+				}
+
+				if (!searchRoot)
+				{
+					Debug.Log("exportSkinFromNode() > Can't determine a root node for skin " + transform.name);
+					return;
+				}
+
+				SerializedObject serializedMesh = new SerializedObject(mesh);
+				var propBoneHashes = serializedMesh.FindProperty("m_BoneNameHashes");
+				for (int i = 0; i < propBoneHashes.arraySize; i++)
+				{
+					uint boneHash = (uint)propBoneHashes.GetArrayElementAtIndex(i).intValue;
+					for (int j = 0; j < propBoneMap.arraySize; j++)
+					{
+						var pair = propBoneMap.GetArrayElementAtIndex(j);
+						var avatarBoneHash = (uint)pair.FindPropertyRelative("first").intValue;
+						if (boneHash == avatarBoneHash)
+						{
+							var avatarBonePath = pair.FindPropertyRelative("second").stringValue;
+							var bone = string.IsNullOrEmpty(avatarBonePath) ? searchRoot : searchRoot.Find(avatarBonePath);
+							if(bone)
+							{
+								gltfSkin.Joints.Add(
+									new NodeId
+									{
+										Id = _exportedTransforms[bone.GetInstanceID()],
+										Root = _root
+									});
+							}
+							else
+							{
+								Debug.LogWarning("exportSkinFromNode() > bone " + avatarBonePath + " not found in " + searchRoot.name);
+							}
+
+							break;
+						}
+					}
+				}
+			}
+
+			if (mesh.bindposes.Length != gltfSkin.Joints.Count)
+			{
+				Debug.LogWarning("exportSkinFromNode() > Bind pose and bone array sizes are different for skin " + transform.name);
 			}
 
 			gltfSkin.InverseBindMatrices = ExportAccessor(mesh.bindposes, true);
