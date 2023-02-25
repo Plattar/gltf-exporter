@@ -27,6 +27,7 @@ namespace UnityGLTF
 		// Temporary setting to avoid validation issue 'not multiple of 4' in bufferView.offset
 		private bool _forceIndicesUint = true;
 
+		private bool _exportSkins = true;
 		private bool _exportAnimation = true;
 		private bool _bakeSkinnedMeshes = false;
 		private Dictionary<string, string> _exportedFiles;
@@ -198,19 +199,24 @@ namespace UnityGLTF
 			_bufferWriter = new BinaryWriter(binFile);
 
 			_root.Scene = ExportScene(fileName, _rootTransforms);
-			if (_exportAnimation)
+
+			HashSet<Transform> skinnedBones = new HashSet<Transform>();
+			if (_exportAnimation || _exportSkins)
 			{
-				exportAnimation();
 				// Export skins
 				for (int i = 0; i < _skinnedNodes.Count; ++i)
 				{
 					Transform t = _skinnedNodes[i];
-					exportSkinFromNode(t);
+					exportSkinFromNode(t, ref skinnedBones);
 
 					updateProgress(EXPORT_STEP.SKINNING, i,  _skinnedNodes.Count);
 				}
 			}
 
+			if (_exportAnimation)
+			{
+				exportAnimation(skinnedBones);
+			}
 
 			_buffer.Uri = fileName + ".bin";
 			_buffer.ByteLength = (int)_bufferWriter.BaseStream.Length;
@@ -239,7 +245,7 @@ namespace UnityGLTF
 				try {
 					_exportedFiles.Add(finalOutputPath, "");
 				}
-				catch (Exception e) {
+				catch (Exception) {
 					throw new Exception("The File " + outputPath + " has alredy been used. Ensure your file names are unique.");
 				}
 
@@ -249,12 +255,12 @@ namespace UnityGLTF
 			triggerFinishCallback();
 		}
 
-		private void exportAnimation()
+		private void exportAnimation(HashSet<Transform> skinnedBones)
 		{
 			for (int i = 0; i < _animatedNodes.Count; ++i)
 			{
 				Transform t = _animatedNodes[i];
-				exportAnimationFromNode(ref t);
+				exportAnimationFromNode(ref t, skinnedBones);
 
 				updateProgress(EXPORT_STEP.ANIMATIONS, i, _animatedNodes.Count);
 			}
@@ -282,7 +288,7 @@ namespace UnityGLTF
 					return _bakedMeshes[skinMesh];
 				}
 
-				return gameObject.GetComponent<SkinnedMeshRenderer>().sharedMesh;
+				return skinMesh.sharedMesh;
 			}
 
 			return null;
@@ -1948,11 +1954,18 @@ namespace UnityGLTF
 			}
 		}
 
-		static int bakingFramerate = 30; // FPS
+		protected struct SavedTransform
+		{
+			public Vector3 localPosition;
+			public Quaternion localRotation;
+			public Vector3 localScale;
+		}
+
+		static float defaultBakingFramerate = 30; // FPS
 		static bool bake = true;
 
 		// Parses Animation/Animator component and generate a glTF animation for the active clip
-		public void exportAnimationFromNode(ref Transform transform/*, ref GLTF.Schema.Animation anim*/)
+		public void exportAnimationFromNode(ref Transform transform, HashSet<Transform> skinnedBones/*, ref GLTF.Schema.Animation anim*/)
 		{
 			Animator a = transform.GetComponent<Animator>();
 
@@ -1961,8 +1974,8 @@ namespace UnityGLTF
 
 				for (int i = 0; i < clips.Length; i++) {
 					GLTF.Schema.Animation anim = new GLTF.Schema.Animation();
-					anim.Name = GLTFEditorExporter.cleanNonAlphanumeric(a.name);
-					convertClipToGLTFAnimation(ref clips[i], ref transform, ref anim);
+					anim.Name = GLTFEditorExporter.cleanNonAlphanumeric(clips[i].name + "." + a.name);
+					convertClipToGLTFAnimation(ref clips[i], ref transform, ref anim, skinnedBones);
 
 					if (anim.Channels.Count > 0 && anim.Samplers.Count > 0) {
 						_root.Animations.Add(anim);
@@ -1977,7 +1990,7 @@ namespace UnityGLTF
 
 					GLTF.Schema.Animation anim = new GLTF.Schema.Animation();
 					anim.Name = GLTFEditorExporter.cleanNonAlphanumeric(state.name);
-					convertClipToGLTFAnimation(ref clip, ref transform, ref anim);
+					convertClipToGLTFAnimation(ref clip, ref transform, ref anim, skinnedBones);
 
 					if (anim.Channels.Count > 0 && anim.Samplers.Count > 0) {
 						_root.Animations.Add(anim);
@@ -1986,7 +1999,7 @@ namespace UnityGLTF
         	}
 		}
 
-		private int getTargetIdFromTransform(ref Transform transform)
+		private int getTargetIdFromTransform(Transform transform)
 		{
 			if (_exportedTransforms.ContainsKey(transform.GetInstanceID()))
 			{
@@ -2010,125 +2023,214 @@ namespace UnityGLTF
 			return id;
 		}
 
-		private void convertClipToGLTFAnimation(ref AnimationClip clip, ref Transform transform, ref GLTF.Schema.Animation animation)
+		private void SavePose(ref Dictionary<Transform, SavedTransform> pose, Transform node)
+		{
+			pose.Add(node, new SavedTransform{ localPosition = node.localPosition, localRotation = node.localRotation, localScale = node.localScale });
+			foreach (Transform child in node)
+			{
+				SavePose(ref pose, child);
+			}
+		}
+
+		private void RestorePose(Dictionary<Transform, SavedTransform> pose, Transform node)
+		{
+			SavedTransform tfm;
+			if (pose.TryGetValue(node, out tfm))
+			{
+				node.localPosition = tfm.localPosition;
+				node.localRotation = tfm.localRotation;
+				node.localScale = tfm.localScale;
+			}
+
+			foreach (Transform child in node)
+			{
+				RestorePose(pose, child);
+			}
+		}
+
+		private void convertClipToGLTFAnimation(ref AnimationClip clip, ref Transform transform, ref GLTF.Schema.Animation animation, HashSet<Transform> skinnedBones)
 		{
 			// Generate GLTF.Schema.AnimationChannel and GLTF.Schema.AnimationSampler
 			// 1 channel per node T/R/S, one sampler per node T/R/S
 			// Need to keep a list of nodes to convert to indexes
 
-			// 1. browse clip, collect all curves and create a TargetCurveSet for each target
-			Dictionary<string, TargetCurveSet> targetCurvesBinding = new Dictionary<string, TargetCurveSet>();
-			collectClipCurves(clip, ref targetCurvesBinding);
-
-			// Baking needs all properties, fill missing curves with transform data in 2 keyframes (start, endTime)
-			// where endTime is clip duration
-			// Note: we should avoid creating curves for a property if none of it's components is animated
-			generateMissingCurves(clip.length, ref transform, ref targetCurvesBinding);
-
-			if (bake)
+			// Human motion is done with special float curves that animate abstract body parameters instead of direct transforms.
+			// The easiest way to get resulting transforms is to sample them from the animated character model.
+			// This implies baked animation mode.
+			bool bakeClip = bake || clip.humanMotion;
+			if (!bakeClip)
 			{
-				// Bake animation for all animated nodes
-				foreach (string target in targetCurvesBinding.Keys)
+				Debug.LogError("Only baked animation is supported for now. Skipping animation");
+				return;
+			}
+
+			// Generate baking frame times but delay exporting an accessor until the first animated node is found
+			float frameRate = (clip.frameRate > 0.0f) ? clip.frameRate : defaultBakingFramerate;
+			int nbSamples = (int)Math.Round(clip.length * frameRate);
+			float[] times = new float[nbSamples];
+			for (int i = 0; i < nbSamples; ++i)
+			{
+				times[i] = Math.Min(i / frameRate, clip.length);
+			}
+
+			AccessorId timeAccessor = null;
+
+			Vector3[] positions = new Vector3[nbSamples];
+			Vector3[] scales = new Vector3[nbSamples];
+			Vector4[] rotations = new Vector4[nbSamples];
+
+			if (clip.humanMotion)
+			{
+				// First save pose to restore it later. We will be animating an actual object in a scene.
+				Dictionary<Transform, SavedTransform> initialPose = new Dictionary<Transform, SavedTransform>();
+				SavePose(ref initialPose, transform);
+				
+				// TODO: use correct reference pose for additive animations!
+
+				// Sample a pose from each frame of the animation
+				Dictionary<Transform, SavedTransform>[] frames = new Dictionary<Transform, SavedTransform>[nbSamples];
+				for (int i = 0; i < nbSamples; ++i)
 				{
-					Transform targetTr = target.Length > 0 ? transform.Find(target) : transform;
-					if (targetTr == null || targetTr.GetComponent<SkinnedMeshRenderer>())
+					frames[i] = new Dictionary<Transform, SavedTransform>();
+					clip.SampleAnimation(transform.gameObject, times[i]);
+					SavePose(ref frames[i], transform);
+				}
+
+				// Clean after ourselves
+				RestorePose(initialPose, transform);
+
+				// Check if the clip is additive
+				// TODO: is there any better way to determine this? Analyze animator layers?
+				SerializedObject serializedClip = new SerializedObject(clip);
+				var propHasAdditiveReferencePose = serializedClip.FindProperty("m_AnimationClipSettings").FindPropertyRelative("m_HasAdditiveReferencePose");
+				bool isClipAdditive = propHasAdditiveReferencePose.boolValue;
+
+				// Dump frame poses to glTF animation data
+				foreach (var (targetTr, tfm) in initialPose)
+				{
+					bool fullDataRequired = skinnedBones.Contains(targetTr) && !isClipAdditive;
+					bool translated = fullDataRequired;
+					bool scaled = fullDataRequired;
+					bool rotated = fullDataRequired;
+					for (int i = 0; i < nbSamples; ++i)
 					{
-						continue;
+						SavedTransform frameTfm;
+						if (frames[i].TryGetValue(targetTr, out frameTfm))
+						{
+							if (!translated) translated = (frameTfm.localPosition != tfm.localPosition);
+							if (!scaled) scaled = (frameTfm.localScale != tfm.localScale);
+							if (!rotated) rotated = (frameTfm.localRotation != tfm.localRotation);
+						}
+						else
+						{
+							frameTfm = tfm; // Should not happen but let's keep it safe
+						}
+						
+						positions[i] = frameTfm.localPosition;
+						scales[i] = frameTfm.localScale;
+						rotations[i] = new Vector4(frameTfm.localRotation.x, frameTfm.localRotation.y, frameTfm.localRotation.z, frameTfm.localRotation.w);
 					}
 
-
-					// Initialize data
-					// Bake and populate animation data
-					float[] times = null;
-					Vector3[] positions = null;
-					Vector3[] scales = null;
-					Vector4[] rotations = null;
-					bakeCurveSet(targetCurvesBinding[target], clip.length, bakingFramerate, ref times, ref positions, ref rotations, ref scales);
-
-					int channelTargetId = getTargetIdFromTransform(ref targetTr);
-					AccessorId timeAccessor = ExportAccessor(times);
-
-					// Create channel
-					AnimationChannel Tchannel = new AnimationChannel();
-					AnimationChannelTarget TchannelTarget = new AnimationChannelTarget();
-					TchannelTarget.Path = GLTFAnimationChannelPath.translation;
-					TchannelTarget.Node = new NodeId
-					{
-						Id = channelTargetId,
-						Root = _root
-					};
-
-					Tchannel.Target = TchannelTarget;
-
-					AnimationSampler Tsampler = new AnimationSampler();
-					Tsampler.Input = timeAccessor;
-					Tsampler.Output = ExportAccessor(positions, true); // Vec3 for translation
-					Tchannel.Sampler = new AnimationSamplerId
-					{
-						Id = animation.Samplers.Count,
-						GLTFAnimation = animation,
-						Root = _root
-					};
-
-					animation.Samplers.Add(Tsampler);
-					animation.Channels.Add(Tchannel);
-
-					// Rotation
-					AnimationChannel Rchannel = new AnimationChannel();
-					AnimationChannelTarget RchannelTarget = new AnimationChannelTarget();
-					RchannelTarget.Path = GLTFAnimationChannelPath.rotation;
-					RchannelTarget.Node = new NodeId
-					{
-						Id = channelTargetId,
-						Root = _root
-					};
-
-					Rchannel.Target = RchannelTarget;
-
-					AnimationSampler Rsampler = new AnimationSampler();
-					Rsampler.Input = timeAccessor; // Float, for time
-					Rsampler.Output = ExportAccessor(rotations, true); // Vec4 for
-					Rchannel.Sampler = new AnimationSamplerId
-					{
-						Id = animation.Samplers.Count,
-						GLTFAnimation = animation,
-						Root = _root
-					};
-
-					animation.Samplers.Add(Rsampler);
-					animation.Channels.Add(Rchannel);
-
-					// Scale
-					AnimationChannel Schannel = new AnimationChannel();
-					AnimationChannelTarget SchannelTarget = new AnimationChannelTarget();
-					SchannelTarget.Path = GLTFAnimationChannelPath.scale;
-					SchannelTarget.Node = new NodeId
-					{
-						Id = channelTargetId,
-						Root = _root
-					};
-
-					Schannel.Target = SchannelTarget;
-
-					AnimationSampler Ssampler = new AnimationSampler();
-					Ssampler.Input = timeAccessor; // Float, for time
-					Ssampler.Output = ExportAccessor(scales); // Vec3 for scale
-					Schannel.Sampler = new AnimationSamplerId
-					{
-						Id = animation.Samplers.Count,
-						GLTFAnimation = animation,
-						Root = _root
-					};
-
-					animation.Samplers.Add(Ssampler);
-					animation.Channels.Add(Schannel);
+					exportNodeAnimationData(targetTr, animation, ref timeAccessor, times,
+						translated ? positions : null,
+						scaled ? scales : null,
+						rotated ? rotations : null);
 				}
 			}
 			else
 			{
-				Debug.LogError("Only baked animation is supported for now. Skipping animation");
-			}
+				// Browse clip, collect all curves and create a TargetCurveSet for each target
+				Dictionary<string, TargetCurveSet> targetCurvesBinding = new Dictionary<string, TargetCurveSet>();
+				collectClipCurves(clip, ref targetCurvesBinding);
 
+				// Match clip target keys to nodes
+				Dictionary<string, Transform> targetNodes = new Dictionary<string, Transform>();
+				foreach (string target in targetCurvesBinding.Keys)
+				{
+					Transform targetTr = target.Length > 0 ? transform.Find(target) : transform;
+					if (targetTr && !targetTr.GetComponent<SkinnedMeshRenderer>())
+					{
+						targetNodes.Add(target, targetTr);
+					}
+				}
+
+				// If the clip has curves for child nodes but we could bind only the root (because of relative name "" which always succeeds)
+				// we skip the clip as not matching. This situation appears when an animator with hasTransformHierarchy == false is attached to
+				// node that is not an original model root. These clips could not be played properly anyway, no use in exporting them.
+				bool noChildrenBound = (targetNodes.Count == 0 || (targetNodes.Count == 1 && targetNodes.ContainsKey("")));
+				if (targetCurvesBinding.Keys.Count > 1 && noChildrenBound)
+				{
+					Debug.LogWarning("Clip '" + clip.name + "' has no valid bindings to children of node '" + transform.name + "', skipped");
+					return;
+				}
+
+				// Bake animation for all animated nodes
+				foreach (string target in targetCurvesBinding.Keys)
+				{
+					Transform targetTr;
+					if (!targetNodes.TryGetValue(target, out targetTr))
+					{
+						continue;
+					}
+
+					TargetCurveSet curveSet = targetCurvesBinding[target];
+
+					bool translated = (curveSet.translationCurves[0] != null);
+					bool scaled = (curveSet.scaleCurves[0] != null);
+					bool rotated = (curveSet.rotationCurves[0] != null);
+
+					if (!translated && !scaled && !rotated)
+					{
+						continue;
+					}
+
+					// Bake and populate animation data
+					for (int i = 0; i < nbSamples; ++i)
+					{
+						float currentTime = times[i];
+						if (translated)
+						{
+							positions[i] = new Vector3(
+								curveSet.translationCurves[0].Evaluate(currentTime),
+								curveSet.translationCurves[1].Evaluate(currentTime),
+								curveSet.translationCurves[2].Evaluate(currentTime));
+						}
+
+						if (scaled)
+						{
+							scales[i] = new Vector3(
+								curveSet.scaleCurves[0].Evaluate(currentTime),
+								curveSet.scaleCurves[1].Evaluate(currentTime),
+								curveSet.scaleCurves[2].Evaluate(currentTime));
+						}
+
+						if (rotated)
+						{
+							if (curveSet.rotationType == ROTATION_TYPE.EULER)
+							{
+								Quaternion eulerToQuat = Quaternion.Euler(
+									curveSet.rotationCurves[0].Evaluate(currentTime),
+									curveSet.rotationCurves[1].Evaluate(currentTime),
+									curveSet.rotationCurves[2].Evaluate(currentTime));
+								rotations[i] = new Vector4(eulerToQuat.x, eulerToQuat.y, eulerToQuat.z, eulerToQuat.w);
+							}
+							else
+							{
+								rotations[i] = new Vector4(
+									curveSet.rotationCurves[0].Evaluate(currentTime),
+									curveSet.rotationCurves[1].Evaluate(currentTime),
+									curveSet.rotationCurves[2].Evaluate(currentTime),
+									curveSet.rotationCurves[3].Evaluate(currentTime));
+							}
+						}
+					}
+
+					exportNodeAnimationData(targetTr, animation, ref timeAccessor, times,
+						translated ? positions : null,
+						scaled ? scales : null,
+						rotated ? rotations : null);
+				}
+			}
 		}
 
 		private void collectClipCurves(AnimationClip clip, ref Dictionary<string, TargetCurveSet> targetCurves)
@@ -2190,79 +2292,106 @@ namespace UnityGLTF
 			}
 		}
 
-		private void generateMissingCurves(float endTime, ref Transform tr, ref Dictionary<string, TargetCurveSet> targetCurvesBinding)
+		private void exportNodeAnimationData(Transform node, GLTF.Schema.Animation animation, ref AccessorId timeAccessor, float[] times, Vector3[] positions, Vector3[] scales, Vector4[] rotations)
 		{
-			foreach (string target in targetCurvesBinding.Keys)
+			if (positions == null && rotations == null && scales == null)
 			{
-				Transform targetTr = target.Length > 0 ? tr.Find(target) : tr;
-				if (targetTr == null)
-					continue;
+				return;
+			}
+			
+			int channelTargetId = getTargetIdFromTransform(node);
 
-				TargetCurveSet current = targetCurvesBinding[target];
-				if (current.translationCurves[0] == null)
-				{
-					current.translationCurves[0] = createConstantCurve(targetTr.localPosition.x, endTime);
-					current.translationCurves[1] = createConstantCurve(targetTr.localPosition.y, endTime);
-					current.translationCurves[2] = createConstantCurve(targetTr.localPosition.z, endTime);
-				}
+			if (timeAccessor == null)
+			{
+				timeAccessor = ExportAccessor(times);
+			}
 
-				if (current.scaleCurves[0] == null)
+			if (positions != null)
+			{
+				// Create channel
+				AnimationChannel Tchannel = new AnimationChannel();
+				AnimationChannelTarget TchannelTarget = new AnimationChannelTarget();
+				TchannelTarget.Path = GLTFAnimationChannelPath.translation;
+				TchannelTarget.Node = new NodeId
 				{
-					current.scaleCurves[0] = createConstantCurve(targetTr.localScale.x, endTime);
-					current.scaleCurves[1] = createConstantCurve(targetTr.localScale.y, endTime);
-					current.scaleCurves[2] = createConstantCurve(targetTr.localScale.z, endTime);
-				}
+					Id = channelTargetId,
+					Root = _root
+				};
 
-				if (current.rotationCurves[0] == null)
+				Tchannel.Target = TchannelTarget;
+
+				AnimationSampler Tsampler = new AnimationSampler();
+				Tsampler.Input = timeAccessor;
+				Tsampler.Output = ExportAccessor(positions, true);
+				Tchannel.Sampler = new AnimationSamplerId
 				{
-					current.rotationCurves[0] = createConstantCurve(targetTr.localRotation.x, endTime);
-					current.rotationCurves[1] = createConstantCurve(targetTr.localRotation.y, endTime);
-					current.rotationCurves[2] = createConstantCurve(targetTr.localRotation.z, endTime);
-					current.rotationCurves[3] = createConstantCurve(targetTr.localRotation.w, endTime);
-				}
+					Id = animation.Samplers.Count,
+					GLTFAnimation = animation,
+					Root = _root
+				};
+
+				animation.Samplers.Add(Tsampler);
+				animation.Channels.Add(Tchannel);
+			}
+
+			if (rotations != null)
+			{
+				// Rotation
+				AnimationChannel Rchannel = new AnimationChannel();
+				AnimationChannelTarget RchannelTarget = new AnimationChannelTarget();
+				RchannelTarget.Path = GLTFAnimationChannelPath.rotation;
+				RchannelTarget.Node = new NodeId
+				{
+					Id = channelTargetId,
+					Root = _root
+				};
+
+				Rchannel.Target = RchannelTarget;
+
+				AnimationSampler Rsampler = new AnimationSampler();
+				Rsampler.Input = timeAccessor;
+				Rsampler.Output = ExportAccessor(rotations, true);
+				Rchannel.Sampler = new AnimationSamplerId
+				{
+					Id = animation.Samplers.Count,
+					GLTFAnimation = animation,
+					Root = _root
+				};
+
+				animation.Samplers.Add(Rsampler);
+				animation.Channels.Add(Rchannel);
+			}
+
+			if (scales != null)
+			{
+				// Scale
+				AnimationChannel Schannel = new AnimationChannel();
+				AnimationChannelTarget SchannelTarget = new AnimationChannelTarget();
+				SchannelTarget.Path = GLTFAnimationChannelPath.scale;
+				SchannelTarget.Node = new NodeId
+				{
+					Id = channelTargetId,
+					Root = _root
+				};
+
+				Schannel.Target = SchannelTarget;
+
+				AnimationSampler Ssampler = new AnimationSampler();
+				Ssampler.Input = timeAccessor;
+				Ssampler.Output = ExportAccessor(scales);
+				Schannel.Sampler = new AnimationSamplerId
+				{
+					Id = animation.Samplers.Count,
+					GLTFAnimation = animation,
+					Root = _root
+				};
+
+				animation.Samplers.Add(Ssampler);
+				animation.Channels.Add(Schannel);
 			}
 		}
 
-		private AnimationCurve createConstantCurve(float value, float endTime)
-		{
-			// No translation curves, adding them
-			AnimationCurve curve = new AnimationCurve();
-			curve.AddKey(0, value);
-			curve.AddKey(endTime, value);
-			return curve;
-		}
-
-		private void bakeCurveSet(TargetCurveSet curveSet, float length, int bakingFramerate, ref float[] times, ref Vector3[] positions, ref Vector4[] rotations, ref Vector3[] scales)
-		{
-			int nbSamples = (int)(length * 30);
-			float deltaTime = length / nbSamples;
-
-			// Initialize Arrays
-			times = new float[nbSamples];
-			positions = new Vector3[nbSamples];
-			scales = new Vector3[nbSamples];
-			rotations = new Vector4[nbSamples];
-
-			// Assuming all the curves exist now
-			for (int i = 0; i < nbSamples; ++i)
-			{
-				float currentTime = i * deltaTime;
-				times[i] = currentTime;
-				positions[i] = new Vector3(curveSet.translationCurves[0].Evaluate(currentTime), curveSet.translationCurves[1].Evaluate(currentTime), curveSet.translationCurves[2].Evaluate(currentTime));
-				scales[i] = new Vector3(curveSet.scaleCurves[0].Evaluate(currentTime), curveSet.scaleCurves[1].Evaluate(currentTime), curveSet.scaleCurves[2].Evaluate(currentTime));
-				if (curveSet.rotationType == ROTATION_TYPE.EULER)
-				{
-					Quaternion eulerToQuat = Quaternion.Euler(curveSet.rotationCurves[0].Evaluate(currentTime), curveSet.rotationCurves[1].Evaluate(currentTime), curveSet.rotationCurves[2].Evaluate(currentTime));
-					rotations[i] = new Vector4(eulerToQuat.x, eulerToQuat.y, eulerToQuat.z, eulerToQuat.w);
-				}
-				else
-				{
-					rotations[i] = new Vector4(curveSet.rotationCurves[0].Evaluate(currentTime), curveSet.rotationCurves[1].Evaluate(currentTime), curveSet.rotationCurves[2].Evaluate(currentTime), curveSet.rotationCurves[3].Evaluate(currentTime));
-				}
-			}
-		}
-
-		private void exportSkinFromNode(Transform transform)
+		private void exportSkinFromNode(Transform transform, ref HashSet<Transform> skinnedBones)
 		{
 			PrimKey key = new PrimKey();
 			UnityEngine.Mesh mesh = getMesh(transform.gameObject);
@@ -2281,6 +2410,7 @@ namespace UnityGLTF
 			{
 				for (int i = 0; i < skin.bones.Length; ++i)
 				{
+					skinnedBones.Add(skin.bones[i]);
 					gltfSkin.Joints.Add(
 						new NodeId
 						{
@@ -2355,6 +2485,7 @@ namespace UnityGLTF
 							var bone = string.IsNullOrEmpty(avatarBonePath) ? searchRoot : searchRoot.Find(avatarBonePath);
 							if(bone)
 							{
+								skinnedBones.Add(bone);
 								gltfSkin.Joints.Add(
 									new NodeId
 									{

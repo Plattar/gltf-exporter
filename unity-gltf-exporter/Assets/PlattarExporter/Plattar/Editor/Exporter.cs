@@ -238,14 +238,15 @@ namespace Plattar {
 				DirectoryInfo info = Directory.CreateDirectory(newpath);
 
 				if (info.Exists) {
-					if (PlattarExporterOptions.ExportAnimations == true) {
+					//if (PlattarExporterOptions.ExportAnimations == true) {
 						var exporter = new GLTFEditorExporter(new Transform[] { selectedObject.transform });
+						exporter.enableAnimation(PlattarExporterOptions.ExportAnimations == true);
 						exporter.SaveGLTFandBin(newpath, selectionName);
-					} 
-					else {
-						var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform });
-						exporter.SaveGLTFandBin(newpath, selectionName);
-					}
+					//} 
+					//else {
+					//	var exporter = new GLTFSceneExporter(new Transform[] { selectedObject.transform });
+					//	exporter.SaveGLTFandBin(newpath, selectionName);
+					//}
 
 					return new Tuple<string, string, string>(path, newpath, selectedName);
 				}
