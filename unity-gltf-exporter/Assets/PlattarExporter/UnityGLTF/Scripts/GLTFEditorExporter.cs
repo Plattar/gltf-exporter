@@ -166,7 +166,6 @@ namespace UnityGLTF
 				Id = _root.Buffers.Count,
 				Root = _root
 			};
-			_root.Buffers.Add(_buffer);
 		}
 
 		/// <summary>
@@ -218,10 +217,24 @@ namespace UnityGLTF
 				exportAnimation(skinnedBones);
 			}
 
-			_buffer.Uri = fileName + ".bin";
-			_buffer.ByteLength = (int)_bufferWriter.BaseStream.Length;
+			int binSize = (int)_bufferWriter.BaseStream.Length;
+#if WINDOWS_UWP
+			binFile.Dispose();
+#else
+			binFile.Close();
+#endif
 
-			_exportedFiles.Add(binPath, "");
+			if (binSize > 0)
+			{
+				_buffer.Uri = fileName + ".bin";
+				_buffer.ByteLength = binSize;
+				_root.Buffers.Add(_buffer);
+				_exportedFiles.Add(binPath, "");
+			}
+			else
+			{
+				File.Delete(binPath);
+			}
 
 			string gltfPath = Path.Combine(path, fileName + ".gltf");
 			var gltfFile = File.CreateText(gltfPath);
@@ -229,10 +242,8 @@ namespace UnityGLTF
 
 #if WINDOWS_UWP
 			gltfFile.Dispose();
-			binFile.Dispose();
 #else
 			gltfFile.Close();
-			binFile.Close();
 #endif
 			_exportedFiles.Add(gltfPath, "");
 			bool backup = GL.sRGBWrite;
