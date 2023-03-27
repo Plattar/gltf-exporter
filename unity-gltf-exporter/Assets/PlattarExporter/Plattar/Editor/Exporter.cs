@@ -103,6 +103,7 @@ namespace Plattar {
 					return;
 				}
 
+				/* Don't forbid exporting objects without geometry (e.g. skeletons)
 				var meshes = selectedObject.GetComponentsInChildren<MeshFilter>();
 				var skinnedMeshes = selectedObject.GetComponentsInChildren<SkinnedMeshRenderer>();
 
@@ -113,6 +114,7 @@ namespace Plattar {
 
 					return;
 				}
+				*/
 
 				EditorGUILayout.Separator();
 
