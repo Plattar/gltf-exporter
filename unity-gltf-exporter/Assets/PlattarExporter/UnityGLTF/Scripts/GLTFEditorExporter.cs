@@ -1355,41 +1355,29 @@ namespace UnityGLTF
 			accessor.Count = count;
 			accessor.Type = GLTFAccessorAttributeType.VEC3;
 
-			float minX = arr[0].x;
-			float minY = arr[0].y;
-			float minZ = arr[0].z;
-			float maxX = arr[0].x;
-			float maxY = arr[0].y;
-			float maxZ = arr[0].z;
+			Vector3 first = switchHandedness ? arr[0].switchHandedness() : arr[0];
+			float minX = first.x;
+			float minY = first.y;
+			float minZ = first.z;
+			float maxX = first.x;
+			float maxY = first.y;
+			float maxZ = first.z;
 
 			for (var i = 1; i < count; i++)
 			{
-				var cur = arr[i];
-
+				Vector3 cur = switchHandedness ? arr[i].switchHandedness() : arr[i];
 				if (cur.x < minX)
-				{
 					minX = cur.x;
-				}
-				if (cur.y < minY)
-				{
-					minY = cur.y;
-				}
-				if (cur.z < minZ)
-				{
-					minZ = cur.z;
-				}
-				if (cur.x > maxX)
-				{
+				else if (cur.x > maxX)
 					maxX = cur.x;
-				}
-				if (cur.y > maxY)
-				{
+				if (cur.y < minY)
+					minY = cur.y;
+				else if (cur.y > maxY)
 					maxY = cur.y;
-				}
-				if (cur.z > maxZ)
-				{
+				if (cur.z < minZ)
+					minZ = cur.z;
+				else if (cur.z > maxZ)
 					maxZ = cur.z;
-				}
 			}
 
 			accessor.Min = new List<double> { minX, minY, minZ };
@@ -1397,20 +1385,12 @@ namespace UnityGLTF
 
 			var byteOffset = _bufferWriter.BaseStream.Position;
 
-			foreach (var vec in arr) {
-				if(switchHandedness)
-				{
-					Vector3 vect = vec.switchHandedness();
-					_bufferWriter.Write(vect.x);
-					_bufferWriter.Write(vect.y);
-					_bufferWriter.Write(vect.z);
-				}
-				else
-				{
-					_bufferWriter.Write(vec.x);
-					_bufferWriter.Write(vec.y);
-					_bufferWriter.Write(vec.z);
-				}
+			foreach (var vec in arr)
+			{
+				Vector3 vect = switchHandedness ? vec.switchHandedness() : vec;
+				_bufferWriter.Write(vect.x);
+				_bufferWriter.Write(vect.y);
+				_bufferWriter.Write(vect.z);
 			}
 
 			var byteLength = _bufferWriter.BaseStream.Position - byteOffset;
@@ -1441,41 +1421,29 @@ namespace UnityGLTF
 			accessor.Type = GLTFAccessorAttributeType.VEC3;
 
 			if (GLTFUtils.boundsExportOption == GLTFUtils.BoundsExportOption.Default) {
-				float minX = arr[0].x;
-				float minY = arr[0].y;
-				float minZ = arr[0].z;
-				float maxX = arr[0].x;
-				float maxY = arr[0].y;
-				float maxZ = arr[0].z;
+				Vector3 first = switchHandedness ? arr[0].switchHandedness() : arr[0];
+				float minX = first.x;
+				float minY = first.y;
+				float minZ = first.z;
+				float maxX = first.x;
+				float maxY = first.y;
+				float maxZ = first.z;
 
 				for (var i = 1; i < count; i++)
 				{
-					var cur = arr[i];
-
+					Vector3 cur = switchHandedness ? arr[i].switchHandedness() : arr[i];
 					if (cur.x < minX)
-					{
 						minX = cur.x;
-					}
-					if (cur.y < minY)
-					{
-						minY = cur.y;
-					}
-					if (cur.z < minZ)
-					{
-						minZ = cur.z;
-					}
-					if (cur.x > maxX)
-					{
+					else if (cur.x > maxX)
 						maxX = cur.x;
-					}
-					if (cur.y > maxY)
-					{
+					if (cur.y < minY)
+						minY = cur.y;
+					else if (cur.y > maxY)
 						maxY = cur.y;
-					}
-					if (cur.z > maxZ)
-					{
+					if (cur.z < minZ)
+						minZ = cur.z;
+					else if (cur.z > maxZ)
 						maxZ = cur.z;
-					}
 				}
 
 				accessor.Min = new List<double> { minX, minY, minZ };
@@ -1506,20 +1474,12 @@ namespace UnityGLTF
 
 			var byteOffset = _bufferWriter.BaseStream.Position;
 
-			foreach (var vec in arr) {
-				if(switchHandedness)
-				{
-					Vector3 vect = vec.switchHandedness();
-					_bufferWriter.Write(vect.x);
-					_bufferWriter.Write(vect.y);
-					_bufferWriter.Write(vect.z);
-				}
-				else
-				{
-					_bufferWriter.Write(vec.x);
-					_bufferWriter.Write(vec.y);
-					_bufferWriter.Write(vec.z);
-				}
+			foreach (var vec in arr)
+			{
+				Vector3 vect = switchHandedness ? vec.switchHandedness() : vec;
+				_bufferWriter.Write(vect.x);
+				_bufferWriter.Write(vect.y);
+				_bufferWriter.Write(vect.z);
 			}
 
 			var byteLength = _bufferWriter.BaseStream.Position - byteOffset;
@@ -1637,51 +1597,35 @@ namespace UnityGLTF
 			accessor.Count = count;
 			accessor.Type = GLTFAccessorAttributeType.VEC4;
 
-			float minX = arr[0].x;
-			float minY = arr[0].y;
-			float minZ = arr[0].z;
-			float minW = arr[0].w;
-			float maxX = arr[0].x;
-			float maxY = arr[0].y;
-			float maxZ = arr[0].z;
-			float maxW = arr[0].w;
+			Vector4 first = switchHandedness ? arr[0].switchHandedness() : arr[0];
+			float minX = first.x;
+			float minY = first.y;
+			float minZ = first.z;
+			float minW = first.w;
+			float maxX = first.x;
+			float maxY = first.y;
+			float maxZ = first.z;
+			float maxW = first.w;
 
 			for (var i = 1; i < count; i++)
 			{
-				var cur = arr[i];
-
+				Vector4 cur = switchHandedness ? arr[i].switchHandedness() : arr[i];
 				if (cur.x < minX)
-				{
 					minX = cur.x;
-				}
-				if (cur.y < minY)
-				{
-					minY = cur.y;
-				}
-				if (cur.z < minZ)
-				{
-					minZ = cur.z;
-				}
-				if (cur.w < minW)
-				{
-					minW = cur.w;
-				}
-				if (cur.x > maxX)
-				{
+				else if (cur.x > maxX)
 					maxX = cur.x;
-				}
-				if (cur.y > maxY)
-				{
+				if (cur.y < minY)
+					minY = cur.y;
+				else if (cur.y > maxY)
 					maxY = cur.y;
-				}
-				if (cur.z > maxZ)
-				{
+				if (cur.z < minZ)
+					minZ = cur.z;
+				else if (cur.z > maxZ)
 					maxZ = cur.z;
-				}
-				if (cur.w > maxW)
-				{
+				if (cur.w < minW)
+					minW = cur.w;
+				else if (cur.w > maxW)
 					maxW = cur.w;
-				}
 			}
 
 			accessor.Min = new List<double> { minX, minY, minZ, minW };
@@ -2007,7 +1951,7 @@ namespace UnityGLTF
 						_root.Animations.Add(anim);
 					}
 				}
-        	}
+			}
 		}
 
 		private int getTargetIdFromTransform(Transform transform)
